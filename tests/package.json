@@ -1,0 +1,11 @@
+{
+  "name": "peviitor-tests",
+  "version": "1.0.0",
+  "description": "Tests for peviitor project commands",
+  "scripts": {
+    "test": "playwright test"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0"
+  }
+}

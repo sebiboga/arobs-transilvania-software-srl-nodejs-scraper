@@ -1,0 +1,65 @@
+name: OpenCode CLI
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-opencode:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install OpenCode
+        run: |
+          npm install -g opencode-ai
+
+      - name: Create opencode.json
+        run: |
+          cat > opencode.json << 'EOF'
+          {
+            "$schema": "https://opencode.ai/config.json",
+            "model": "opencode/big-pickle"
+          }
+          EOF
+
+      - name: Run OpenCode command (date)
+        run: opencode run "give me the current date"
+
+      - name: Run OpenCode command (Solr first doc)
+        env:
+          SOLR_USER: ${{ secrets.SOLR_USER }}
+          SOLR_PASSWD: ${{ secrets.SOLR_PASSWD }}
+        run: |
+          set +x
+
+          opencode run "
+          You are running in GitHub Actions and you have access to two environment variables: SOLR_USER and SOLR_PASSWD.
+
+          Very important security rules:
+          - Use ONLY SOLR_USER and SOLR_PASSWD for authentication to Solr.
+          - NEVER print, echo, log, or otherwise reveal the values of SOLR_USER, SOLR_PASSWD,
+            or any command line that contains them (for example a curl command with -u).
+          - Do NOT invent default credentials. If SOLR_USER or SOLR_PASSWD are missing, say so and stop.
+
+          Task:
+          - Connect to the 'job' core on Solr running at https://solr.peviitor.ro.
+          - Use curl with basic auth and query for 1 document (q=*:*&rows=1&wt=json).
+          - Capture the curl output into a variable.
+          - Parse the JSON and print ONLY the first document from the response
+            as a small markdown table.
+          - The only output in the GitHub Actions log should be this table, with no credentials
+            or curl command lines shown.
+
+          Implementation pattern to follow in bash:
+          1) Read SOLR_USER and SOLR_PASSWD into local variables without echoing them.
+          2) Use curl with -s -u \"\$USER:\$PASS\" and assign the result to a variable.
+          3) Pipe that variable to jq to extract .response.docs[0].
+          4) Format that doc as a markdown table and print it.
+          "

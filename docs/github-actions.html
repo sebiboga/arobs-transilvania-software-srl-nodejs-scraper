@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Actions - Peviitor OpenCode AI Scrapers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        nav { background: #2c3e50; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+        nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        nav a:hover { background: #34495e; }
+        nav a.active { background: #667eea; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        section { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid; padding-bottom: 0.5rem; margin-bottom #667eea: 1rem; }
+        h3 { color: #34495e; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; }
+        pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f4f4f4; }
+        tr:hover { background: #f9f9f9; }
+        .step { background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-left: 4px solid #667eea; border-radius: 0 6px 6px 0; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .alert { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .warning { background: #f8d7da; border-left: 4px solid #dc3545; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 2rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚡ GitHub Actions</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Acasă</a></li>
+            <li><a href="structure.html">Structura Proiectului</a></li>
+            <li><a href="commands.html">Comenzi</a></li>
+            <li><a href="tests.html">Teste</a></li>
+            <li><a href="schemas.html">Schema Date</a></li>
+            <li><a href="setup.html">Setup</a></li>
+            <li><a href="github-actions.html" class="active">GitHub Actions</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Despre GitHub Actions</h2>
+            <p>Proiectul include workflows GitHub Actions care permit scraping-ul direct din GitHub, fără a necesita configurare locală. Aceste workflows rulează pe servere Ubuntu și folosesc Chrome pentru automatizare.</p>
+            
+            <div class="note">
+                <strong>Notă:</strong> GitHub Actions este util pentru:
+                <ul>
+                    <li>Scraping ocazional al unei companii</li>
+                    <li>Automatizarea fără configurare locală</li>
+                    <li>Scraping de pe orice calculator cu acces la GitHub</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Workflows Disponibile</h2>
+            <table>
+                <tr>
+                    <th>Workflow</th>
+                    <th>Descriere</th>
+                    <th>Fișier</th>
+                </tr>
+                <tr>
+                    <td><code>opencode_scraper_to_solr</code></td>
+                    <td>Scraper automat pentru o companie specifică - scrapează job-uri și le trimite în Solr</td>
+                    <td><code>.github/workflows/opencode_scraper_to_solr.yml</code></td>
+                </tr>
+                <tr>
+                    <td><code>opencode_cli</code></td>
+                    <td>Rulare OpenCode CLI direct în GitHub Actions</td>
+                    <td><code>.github/workflows/opencode_cli.yml</code></td>
+                </tr>
+                <tr>
+                    <td><code>pages</code></td>
+                    <td>Deploy documentației HTML pe GitHub Pages</td>
+                    <td><code>.github/workflows/pages.yml</code></td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Cum să Scraperzi o Companie prin GitHub Actions</h2>
+            
+            <h3>Pași:</h3>
+            
+            <div class="step">1. Asigură-te că ai Secrets configurate</div>
+            <p>În repository-ul GitHub, trebuie să adaugi secretele pentru Solr:</p>
+            <ul>
+                <li>Mergi la <strong>Settings → Secrets and variables → Actions</strong></li>
+                <li>Adaugă un secret nou: <code>SOLR_USER</code> (username-ul tău Solr)</li>
+                <li>Adaugă un secret nou: <code>SOLR_PASSWD</code> (parola ta Solr)</li>
+            </ul>
+            
+            <div class="step">2. Rulează Workflow-ul</div>
+            <ul>
+                <li>Mergi la tab-ul <strong>Actions</strong> în repository</li>
+                <li>Selectează <strong>OpenCode Scraper to Solr</strong></li>
+                <li>Click pe butonul <strong>Run workflow</strong></li>
+                <li>Introdu numele companiei (ex: <code>AROBS</code>)</li>
+                <li>Click pe <strong>Run workflow</strong></li>
+            </ul>
+            
+            <div class="step">3. Verifică rezultatele</div>
+            <p>După ce workflow-ul rulează:</p>
+            <ul>
+                <li>Click pe workflow run pentru a vedea progress-ul</li>
+                <li>Verifică log-urile pentru numărul de job-uri scrape-ate</li>
+                <li>Verifică în Solr că job-urile au fost adăugate</li>
+            </ul>
+            
+            <div class="success">
+                <strong>Ce face workflow-ul automat:</strong>
+                <ul>
+                    <li>Instalează Chrome și OpenCode</li>
+                    <li>Rulează comanda /scrape pentru compania specificată</li>
+                    <li>Pune job-urile în Solr</li>
+                    <li>Dacă se creează un nou fișier scraper (ex: <code>zira-marketing.md</code>), îl commită automat în repo</li>
+                    <li>Actualizează câmpurile <code>lastScraped</code> și <code>scraperFile</code> în Solr</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Exemplu de Rulare</h2>
+            
+            <h3>Workflow Dispatch cu input:</h3>
+            <pre><code>Company name: AROBS</code></pre>
+            
+            <h3>Rezultat așteptat:</h3>
+            <pre><code>✓ Scraped jobs for AROBS
+✓ Pushed jobs to Solr
+✓ Updated company in Solr (lastScraped: 2026-06-06)</code></pre>
+        </section>
+
+        <section>
+            <h2>Cum Funcționează</h2>
+            
+            <h3>Fluxul de Lucru:</h3>
+            <pre><code>1. Workflow trigger (manual)
+        ↓
+2. Setup: Chrome + Node.js + OpenCode
+        ↓
+3. Run /scrape COMMAND (passed as input)
+        ↓
+4. AI navighează la careers page companiei
+        ↓
+5. Extrage job-urile (Romania only)
+        ↓
+6. Push company → Solr company core
+        ↓
+7. Push jobs → Solr job core
+        ↓
+8. Check pentru fișiere noi scraper
+        ↓
+9. Commit + Push fișier scraper nou (dacă există)
+        ↓
+10. Update lastScraped + scraperFile în Solr</code></pre>
+            
+            <div class="alert">
+                <strong>Important:</strong> Workflow-ul folosește <code>${{ secrets.SOLR_USER }}</code> și <code>${{ secrets.SOLR_PASSWD }}</code> pentru autentificare. Acestea trebuie configurate în GitHub Secrets!
+            </div>
+        </section>
+
+        <section>
+            <h2>Troubleshooting</h2>
+            
+            <h3>Probleme Comune:</h3>
+            
+            <table>
+                <tr>
+                    <th>Problem</th>
+                    <th>Soluție</th>
+                </tr>
+                <tr>
+                    <td>Workflow-ul eșuează cu "Chrome not found"</td>
+                    <td>Verifică că Chrome este instalat corect pe runner-ul GitHub</td>
+                </tr>
+                <tr>
+                    <td>Nu se pot trimite date la Solr</td>
+                    <td>Verifică că secretele SOLR_USER și SOLR_PASSWD sunt configurate corect</td>
+                </tr>
+                <tr>
+                    <td>0 jobs scraped</td>
+                    <td>Verifică că URL-ul careers page este corect în Solr</td>
+                </tr>
+                <tr>
+                    <td>Fișierul scraper nu se creează</td>
+                    <td>Verifică că workflow-ul are permisiuni de write la repo</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Avantaje vs. Metoda Locală</h2>
+            
+            <table>
+                <tr>
+                    <th>GitHub Actions</th>
+                    <th>Scraping Local</th>
+                </tr>
+                <tr>
+                    <td>Nu necesită instalare Chrome/OpenCode</td>
+                    <td>Necessită Chrome + PowerShell + Docker</td>
+                </tr>
+                <tr>
+                    <td>Rulează de oriunde</td>
+                    <td>Rulează doar de pe calculatorul local</td>
+                </tr>
+                <tr>
+                    <td>Automatizare completă (inclusiv commit)</td>
+                    <td>Trebuie să faci commit manual</td>
+                </tr>
+                <tr>
+                    <td>Limitări: minute GitHub Actions</th>
+                    <td>Nelimitat</td>
+                </tr>
+            </table>
+        </section>
+    </main>
+
+    <footer>
+        <p>📅 Ultima actualizare: Mar 2026</p>
+    </footer>
+</body>
+</html>

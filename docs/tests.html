@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste - Peviitor OpenCode AI Scrapers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        nav { background: #2c3e50; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+        nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        nav a:hover { background: #34495e; }
+        nav a.active { background: #667eea; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        section { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        h3 { color: #34495e; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; }
+        pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f4f4f4; }
+        tr:hover { background: #f9f9f9; }
+        .test-pass { color: #27ae60; font-weight: bold; }
+        .test-fail { color: #e74c3c; font-weight: bold; }
+        .step { background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-left: 4px solid #667eea; border-radius: 0 6px 6px 0; }
+        .alert { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 2rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🧪 Teste Playwright</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Acasă</a></li>
+            <li><a href="structure.html">Structura Proiectului</a></li>
+            <li><a href="commands.html">Comenzi</a></li>
+            <li><a href="tests.html" class="active">Teste</a></li>
+            <li><a href="schemas.html">Schema Date</a></li>
+            <li><a href="setup.html">Setup</a></li>
+            <li><a href="github-actions.html">GitHub Actions</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Despre Teste</h2>
+            <p>Proiectul folosește <strong>Playwright</strong> pentru testare automată. Testele validează că fluxurile de lucru funcționează corect.</p>
+            
+            <div class="alert">
+                <strong>Notă:</strong> Înainte de a rula testele, trebuie să rulezi <code>npm install</code> în folderul <code>tests/</code> pentru a instala dependențele.
+            </div>
+        </section>
+
+        <section>
+            <h2>Fișiere de Test</h2>
+            <table>
+                <tr>
+                    <th>Fișier</th>
+                    <th>Descriere</th>
+                    <th>Tip</th>
+                </tr>
+                <tr>
+                    <td><code>login-solr.test.ts</code></td>
+                    <td>Testează comanda /login-solr - deschide Solr în Chrome și face login</td>
+                    <td>Browser Automation</td>
+                </tr>
+                <tr>
+                    <td><code>update-solr.test.ts</code></td>
+                    <td>Testează comanda /update-solr - adaugă job documents în Solr</td>
+                    <td>API Test</td>
+                </tr>
+                <tr>
+                    <td><code>delete-solr.test.ts</code></td>
+                    <td>Testează comanda /delete-solr - șterge job documents din Solr</td>
+                    <td>API Test</td>
+                </tr>
+                <tr>
+                    <td><code>add-website.test.ts</code></td>
+                    <td>Testează comanda /add-website - adaugă companie nouă în Solr company core</td>
+                    <td>API Test</td>
+                </tr>
+                <tr>
+                    <td><code>add-website-new-workflow.test.ts</code></td>
+                    <td>Testează fluxul complet /add-website cu website lookup</td>
+                    <td>File Test</td>
+                </tr>
+                <tr>
+                    <td><code>remove-404.test.ts</code></td>
+                    <td>Testează comanda /remove-404 - validează URL-uri și șterge job-uri inactive</td>
+                    <td>API + Browser Test</td>
+                </tr>
+                <tr>
+                    <td><code>remove-404-vdate.test.ts</code></td>
+                    <td>Testează actualizarea câmpului vdate în /remove-404</td>
+                    <td>API Test</td>
+                </tr>
+                <tr>
+                    <td><code>remove-404-chrome.test.ts</code></td>
+                    <td>Testează verificarea conținutului paginii cu Chrome în /remove-404</td>
+                    <td>Browser Test</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Cum să Rulezi Testele</h2>
+            
+            <h3>1. Prerechizite</h3>
+            <div class="step">Porneste Chrome cu debugging:</div>
+            <pre><code>cd ..
+powershell -ExecutionPolicy Bypass -File start-chrome.ps1</code></pre>
+            
+            <div class="step">Porneste Solr (pentru testele Solr):</div>
+            <pre><code>docker start peviitor-solr</code></pre>
+            
+            <h3>2. Instalează Dependențele</h3>
+            <pre><code>cd tests
+npm install</code></pre>
+            
+            <h3>3. Rulează Toate Testele</h3>
+            <pre><code>npx playwright test</code></pre>
+            
+            <h3>4. Rulează un Test Specific</h3>
+            <pre><code>npx playwright test login-solr.test.ts
+npx playwright test update-solr.test.ts
+npx playwright test delete-solr.test.ts
+npx playwright test add-website.test.ts</code></pre>
+        </section>
+
+        <section>
+            <h2>Rezultate Teste</h2>
+            <p>Când rulezi testele, vei vedea rezultate ca:</p>
+            
+            <pre><code>Running 3 tests using 1 worker
+
+  ok 1 [Chrome] › update-solr.test.ts:9:5 › verify job core is accessible <span class="test-pass">✓</span>
+  ok 2 [Chrome] › update-solr.test.ts:18:5 › query existing jobs <span class="test-pass">✓</span>
+  ok 3 [Chrome] › update-solr.test.ts:26:5 › add new job document following Job schema <span class="test-pass">✓</span>
+
+  <span class="test-pass">3 passed</span></code></pre>
+        </section>
+
+        <section>
+            <h2>Configurare Playwright</h2>
+            <p>Fișierul <code>playwright.config.ts</code> conține configurarea:</p>
+            <pre><code>import { defineConfig, devices } from "@playwright/test";
+
+export default defineConfig({
+  testDir: ".",
+  timeout: 30000,
+  use: {
+    baseURL: "https://solr.peviitor.ro",
+    headless: false,
+    launchOptions: {
+      args: ["--remote-debugging-port=9222"],
+    },
+  },
+  projects: [
+    {
+      name: "Chrome",
+      use: { ...devices["Desktop Chrome"] },
+    },
+  ],
+});</code></pre>
+            
+            <div class="alert">
+                <strong>Important:</strong> Testele folosesc Chrome-ul care este deja pornit cu debugging pe portul 9222 (de la <code>start-chrome.ps1</code>).
+            </div>
+        </section>
+
+        <section>
+            <h2>Adaugă Teste Noi</h2>
+            <p>Pentru a adăuga un test nou:</p>
+            <div class="step">1. creează un fișier <code>*.test.ts</code> în folderul <code>tests/</code></div>
+            <div class="step">2. Definește testul folosind Playwright API</div>
+            <div class="step">3. Rulează testul pentru a verifica că funcționează</div>
+            <div class="step">4. Urmărește fluxul de lucru din <code>/instructions</code> pentru a actualiza documentația după modificări</div>
+            
+            <h3>Exemplu:</h3>
+            <pre><code>import { test, expect } from "@playwright/test";
+
+test("descriere test", async ({ page }) => {
+    // Logica testului
+    await page.goto("https://solr.peviitor.ro/solr/");
+    // ...
+});</code></pre>
+            
+            <div class="alert">
+                <strong>Important:</strong> Când testezi funcții care folosesc Job Schema, asigură-te că NU incluzi câmpul <code>description</code> - acesta nu există în schema Job!
+            </div>
+        </section>
+        
+        <section>
+            <h2>Bug-uri Fix-uite</h2>
+            <ul>
+                <li><strong>update-solr.test.ts</strong> - Corectat formatul Solr delete-by-query de la <code>"_delete_":true</code> la formatul corect: <code>{"delete":{"query":"url:\"https://example.com/job\""}}</code></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>📅 Ultima actualizare: Mar 2026</p>
+    </footer>
+</body>
+</html>

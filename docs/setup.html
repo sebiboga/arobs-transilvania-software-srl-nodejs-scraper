@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup - Peviitor OpenCode AI Scrapers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        nav { background: #2c3e50; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+        nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        nav a:hover { background: #34495e; }
+        nav a.active { background: #667eea; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        section { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        h3 { color: #34495e; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; }
+        pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+        pre code { background: none; padding: 0; color: inherit; }
+        .step { background: #f9f9f9; padding: 1rem; margin: 0.5rem 0; border-left: 4px solid #667eea; border-radius: 0 6px 6px 0; }
+        .check { color: #27ae60; font-weight: bold; }
+        .warning { color: #e67e22; }
+        .alert { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .danger { background: #f8d7da; border-left: 4px solid #dc3545; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .success { background: #d4edda; border-left: 4px solid #28a745; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .specs-table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        .specs-table th, .specs-table td { padding: 1rem; text-align: left; border-bottom: 1px solid #ddd; }
+        .specs-table th { background: #667eea; color: white; }
+        .specs-table tr:hover { background: #f9f9f9; }
+        .spec-min { color: #dc3545; font-weight: bold; }
+        .spec-rec { color: #28a745; font-weight: bold; }
+        ul { margin-left: 1.5rem; }
+        li { margin: 0.5rem 0; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 2rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>⚙️ Setup și Instalare</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Acasă</a></li>
+            <li><a href="structure.html">Structura Proiectului</a></li>
+            <li><a href="commands.html">Comenzi</a></li>
+            <li><a href="tests.html">Teste</a></li>
+            <li><a href="schemas.html">Schema Date</a></li>
+            <li><a href="setup.html" class="active">Setup</a></li>
+            <li><a href="github-actions.html">GitHub Actions</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Cerințe de Sistem</h2>
+            <ul>
+                <li><strong>Windows 10/11</strong> - Proiectul folosește PowerShell</li>
+                <li><strong>PowerShell 5.1+</strong> sau <strong>PowerShell 7+</strong></li>
+                <li><strong>Google Chrome</strong> - pentru automatizare browser</li>
+                <li><strong>Docker Desktop</strong> - pentru Solr container</li>
+                <li><strong>Node.js 18+</strong> - pentru rulare teste</li>
+                <li><strong>OpenCode</strong> - CLI pentru automatizare AI</li>
+            </ul>
+        </section>
+
+        <section>
+            <h2>Cerințe Hardware</h2>
+            <p>Aceasta este o soluție <strong>hibridă cloud + local</strong> - AI-ul rulează în cloud OpenCode, serviciile locale (Chrome, Solr) necesită resurse hardware dedicate.</p>
+            
+            <table class="specs-table">
+                <tr>
+                    <th>Componentă</th>
+                    <th>Minim</th>
+                    <th>Recomandat</th>
+                </tr>
+                <tr>
+                    <td><strong>RAM</strong></td>
+                    <td class="spec-min">8 GB</td>
+                    <td class="spec-rec">16 GB</td>
+                </tr>
+                <tr>
+                    <td><strong>CPU</strong></td>
+                    <td class="spec-min">2 core</td>
+                    <td class="spec-rec">4+ core</td>
+                </tr>
+                <tr>
+                    <td><strong>Stocare</strong></td>
+                    <td class="spec-min">20 GB liberi</td>
+                    <td class="spec-rec">50 GB SSD</td>
+                </tr>
+                <tr>
+                    <td><strong>AI (Cloud)</strong></td>
+                    <td class="spec-min">-</td>
+                    <td class="spec-rec">-</td>
+                </tr>
+            </table>
+
+            <h3>Detalii Cerințe Hardware:</h3>
+            
+            <div class="step"><strong>RAM (Memorie):</strong></div>
+            <ul>
+                <li>Docker + Solr: <strong>~2 GB</strong> RAM</li>
+                <li>Chrome cu debugging: <strong>~1 GB</strong> RAM</li>
+                <li>AI Big Pickle: <strong>rulează în cloud OpenCode</strong> (nu consumă RAM local)</li>
+                <li>Sistem de operare: <strong>~2 GB</strong> RAM</li>
+            </ul>
+            <p><strong>Total minim: 8 GB RAM</strong> (16 GB recomandat pentru performanță optimă)</p>
+
+            <div class="step"><strong>CPU:</strong></div>
+            <ul>
+                <li>Minim 2 core-uri pentru rulare de bază</li>
+                <li>4+ core-uri pentru performanță optimă</li>
+            </ul>
+
+            <div class="step"><strong>Stocare:</strong></div>
+            <ul>
+                <li><strong>Docker Desktop</strong>: ~5 GB</li>
+                <li><strong>Solr container</strong>: ~2 GB (plus date)</li>
+                <li><strong>Chrome</strong>: ~500 MB</li>
+                <li><strong>OpenCode CLI</strong>: ~500 MB</li>
+                <li><strong>Node.js + dependențe</strong>: ~2 GB</li>
+                <li><strong>Spațiu liber pentru date</strong>: 20+ GB</li>
+            </ul>
+            <p><strong>Recomandare: SSD</strong> - îmbunătățește performanța Docker.</p>
+
+            <div class="danger">
+                <strong>⚠️ ATENȚIE: Ai nevoie de minim 8 GB RAM!</strong>
+                <ul>
+                    <li>Chrome + Docker au nevoie de ~3-4 GB RAM</li>
+                    <li>Sistemul de operare necesită ~2 GB RAM</li>
+                    <li>Cu 8 GB RAM totul va funcționa OK</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>Confidențialitate și Securitate</h2>
+            <p>Acest proiect folosește o <strong>arhitectură hibridă</strong> - AI în cloud, date local.</p>
+
+            <div class="success">
+                <strong>✅ Ce rulează LOCAL pe calculatorul tău:</strong>
+                <ul>
+                    <li><strong>Chrome</strong> - cu remote debugging pentru scraping</li>
+                    <li><strong>Date de scraping</strong> - job-urile sunt stocate local în Solr</li>
+                    <li><strong>Credențiale Solr</strong> - nu sunt trimise nicăieri</li>
+                    <li><strong>Istoric navigare</strong> - rămâne în Chrome local</li>
+                </ul>
+            </div>
+
+            <div class="step"><strong>Când folosești OpenCode cu Big Pickle:</strong></div>
+            <ul>
+                <li>Modelul AI rulează în <strong>cloud-ul OpenCode</strong> (opencode.ai)</li>
+                <li>Comenzile sunt trimise de la AI cloud către Chrome local via MCP</li>
+                <li>Solr este disponibil pe serverul de producție (solr.peviitor.ro)</li>
+            </ul>
+
+            <div class="step"><strong>Ce necesită internet:</strong></div>
+            <ul>
+                <li>AI-ul procesează în cloud OpenCode</li>
+                <li>Accesarea site-urilor companiilor pentru scraping (în Chrome local)</li>
+                <li>Download Docker imagini (de pe Docker Hub oficial)</li>
+            </ul>
+
+            <div class="danger">
+                <strong>🔒 Confidențialitate:</strong>
+                <ul>
+                    <li>Datele de job-uri sunt stocate pe serverul Solr</li>
+                    <li>Navigarea web este locală în Chrome</li>
+                    <li>Solr rulează pe serverul de producție (solr.peviitor.ro)</li>
+                    <li>Chrome DevTools MCP conectează cloud-ul la browser-ul local</li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>0. Instalare Dependențe</h2>
+            <p>Instalează dependențele pentru OpenCode și teste:</p>
+            
+            <div class="step">OpenCode (se instalează automat de OpenCode CLI):</div>
+            <pre><code>cd .opencode
+npm install</code></pre>
+            
+            <div class="step">Teste Playwright:</div>
+            <pre><code>cd tests
+npm install</code></pre>
+            
+            <div class="note">
+                <strong>Notă:</strong> Folder-ele <code>node_modules</code> sunt generate automat. Nu trebuie incluse în git.
+            </div>
+        </section>
+
+        <section>
+            <h2>1. Pornire Chrome cu Debugging</h2>
+            <p>Pentru a folosi Chrome DevTools MCP, trebuie să pornești Chrome cu debugging activ pe portul 9222.</p>
+            
+            <div class="step">Rulează scriptul PowerShell:</div>
+            <pre><code>powershell -ExecutionPolicy Bypass -File start-chrome.ps1</code></pre>
+            
+            <div class="alert">
+                <strong>Important:</strong> Acest pas este necesar de fiecare dată când vrei să folosești Chrome DevTools MCP. Chrome trebuie să fie pornit cu flag-ul <code>--remote-debugging-port=9222</code>.
+            </div>
+            
+            <div class="step">Verifică că Chrome rulează:</div>
+            <pre><code>curl -s http://127.0.0.1:9222/json</code></pre>
+            
+            <p class="check">✓ Ar trebui să vezi un răspuns JSON cu informații despre Chrome.</p>
+        </section>
+
+        <section>
+            <h2>2. Pornire Solr (Optional)</h2>
+            <p>Solr este folosit pentru stocarea și indexarea job-urilor.</p>
+            
+            <div class="step">Verifică dacă Solr rulează:</div>
+            <pre><code>docker ps --filter "name=peviitor-solr"</code></pre>
+            
+            <div class="step">Porneste Solr:</div>
+            <pre><code>docker start peviitor-solr</code></pre>
+            
+            <div class="step">Verifică că Solr este accesibil:</div>
+            <pre><code>curl -s -u "$SOLR_USER:$SOLR_PASSWD" "https://solr.peviitor.ro/solr/admin/cores"</code></pre>
+            
+            <p class="check">✓ Ar trebui să vezi un răspuns JSON cu statusul cores-urilor.</p>
+            
+            <div class="note">
+                <strong>Credentiale Solr:</strong>
+                <ul>
+<li>Username: <code>$SOLR_USER</code></li>
+                    <li>Password: <code>$SOLR_PASSWD</code></li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Setup Teste (Optional)</h2>
+            <p>Pentru a rula testele Playwright:</p>
+            
+            <div class="step">Instalează dependențele:</div>
+            <pre><code>cd tests
+npm install</code></pre>
+            
+            <div class="step">Rulează testele:</div>
+            <pre><code>npx playwright test</code></pre>
+        </section>
+
+        <section>
+            <h2>4. Folosire OpenCode</h2>
+            <p>După ce ai pornit Chrome, poți folosi comenzile OpenCode:</p>
+            
+            <h3>Scrape o companie:</h3>
+            <pre><code>/scrape AROBS</code></pre>
+            
+            <h3>Adaugă o nouă companie:</h3>
+            <pre><code>/add-website AROBS</code></pre>
+            
+            <h3>Actualizează documentația:</h3>
+            <pre><code>/docs-update
+/instructions</code></pre>
+            
+            <h3>Login la Solr:</h3>
+            <pre><code>/login-solr</code></pre>
+            
+            <h3>Șterge job din Solr:</h3>
+            <pre><code>/delete-solr url:https://example.com/job</code></pre>
+            
+            <div class="note">
+                <strong>Notă:</strong> Fiecare companie are un fișier scraper în <code>webscraper/</code> (ex: epam.md, endava.md) care conține instrucțiuni specifice pentru extragerea job-urilor și tag-urilor.
+            </div>
+        </section>
+
+        <section>
+            <h2>Workflow Zilnic</h2>
+            <pre><code>1. Pornește Chrome:
+   powershell -ExecutionPolicy Bypass -File start-chrome.ps1
+
+2. Pornește Solr (dacă e oprit):
+   docker start peviitor-solr
+
+3. Folosește OpenCode pentru scraping:
+   /scrape AROBS        # scrape jobs + tags din AROBS
+   /scrape ENDAVA      # scrape jobs + tags din ENDAVA
+   /scrape BENTO      # scrape jobs + tags din BENTO
+
+4. Rulează testele pentru verificare:
+   cd tests
+   npx playwright test</code></pre>
+        </section>
+
+        <section>
+            <h2>Depanare</h2>
+            
+            <h3>Chrome MCP nu funcționează?</h3>
+            <ul>
+                <li>Verifică că Chrome e pornit cu debugging: <code>curl http://127.0.0.1:9222/json</code></li>
+                <li>Rulează din nou <code>start-chrome.ps1</code></li>
+            </ul>
+            
+            <h3>Solr nu răspunde?</h3>
+            <ul>
+                <li>Verifică containerul: <code>docker ps</code></li>
+                <li>Porneste containerul: <code>docker start peviitor-solr</code></li>
+                <li>Verifică log-urile: <code>docker logs peviitor-solr</code></li>
+            </ul>
+            
+            <h3>Testele eșuează?</h3>
+            <ul>
+                <li>Verifică că Chrome și Solr sunt pornite</li>
+                <li>Reinstalează dependențele: <code>cd tests && npm install</code></li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>📅 Ultima actualizare: Mar 2026</p>
+    </footer>
+</body>
+</html>

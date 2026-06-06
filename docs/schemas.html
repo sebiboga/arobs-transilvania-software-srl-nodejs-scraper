@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Schema Date - Peviitor OpenCode AI Scrapers</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
+        header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem; text-align: center; }
+        header h1 { font-size: 2rem; margin-bottom: 0.5rem; }
+        nav { background: #2c3e50; padding: 1rem; position: sticky; top: 0; z-index: 100; }
+        nav ul { list-style: none; display: flex; justify-content: center; flex-wrap: wrap; gap: 1rem; }
+        nav a { color: white; text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px; }
+        nav a:hover { background: #34495e; }
+        nav a.active { background: #667eea; }
+        main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+        section { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; margin-bottom: 1rem; }
+        h3 { color: #34495e; margin-top: 1.5rem; margin-bottom: 0.5rem; }
+        code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; }
+        pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
+        pre code { background: none; padding: 0; color: inherit; }
+        table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+        th, td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f4f4f4; }
+        tr:hover { background: #f9f9f9; }
+        .required { color: #e74c3c; font-weight: bold; }
+        .optional { color: #95a5a6; }
+        .type { color: #667eea; font-family: monospace; }
+        .note { background: #fff3cd; border-left: 4px solid #ffc107; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        .alert { background: #d1ecf1; border-left: 4px solid #17a2b8; padding: 1rem; margin: 1rem 0; border-radius: 4px; }
+        footer { background: #2c3e50; color: white; text-align: center; padding: 2rem; margin-top: 3rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📊 Schema Date</h1>
+    </header>
+
+    <nav>
+        <ul>
+            <li><a href="index.html">Acasă</a></li>
+            <li><a href="structure.html">Structura Proiectului</a></li>
+            <li><a href="commands.html">Comenzi</a></li>
+            <li><a href="tests.html">Teste</a></li>
+            <li><a href="schemas.html" class="active">Schema Date</a></li>
+            <li><a href="setup.html">Setup</a></li>
+            <li><a href="github-actions.html">GitHub Actions</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section>
+            <h2>Job Model</h2>
+            <p>Schema pentru documentele de tip job stocate în Solr.</p>
+            
+            <table>
+                <tr>
+                    <th>Câmp</th>
+                    <th>Tip</th>
+                    <th>Necesar</th>
+                    <th>Descriere și Reguli</th>
+                </tr>
+                <tr>
+                    <td><code>url</code></td>
+                    <td class="type">string</td>
+                    <td class="required">Da</td>
+                    <td>URL complet către pagina job-ului. <strong>Unic.</strong> Trebuie să fie HTTP/HTTPS valid.</td>
+                </tr>
+                <tr>
+                    <td><code>title</code></td>
+                    <td class="type">string</td>
+                    <td class="required">Da</td>
+                    <td>Titlul exact al poziției. Max 200 caractere, fără HTML, spații trunchiate. <strong>DIACRITICE ACCEPTATE</strong> (ăâîșț).</td>
+                </tr>
+                <tr>
+                    <td><code>company</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Numele companiei angajatoare. Trebuie să coincidă exact cu Company.name (case insensitive, <strong>DIACRITICE NECESARE</strong>).</td>
+                </tr>
+                <tr>
+                    <td><code>cif</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>CIF/CUI al companiei. 8 cifre (fără prefix RO).</td>
+                </tr>
+                <tr>
+                    <td><code>location</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Locații/adrese. Orașe românești, <strong>DIACRITICE ACCEPTATE</strong> (ex: "București", "Cluj-Napoca"). Array.</td>
+                </tr>
+                <tr>
+                    <td><code>tags</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Tag-uri pentru skills, seniority, și domeniu. Max 20 intrări, valori standardizate, <strong>FĂRĂ DIACRITICE</strong> (use "it" not "IT").</td>
+                </tr>
+                <tr>
+                    <td><code>workmode</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Unul dintre: <code>"remote"</code>, <code>"on-site"</code>, <code>"hybrid"</code>.</td>
+                </tr>
+                <tr>
+                    <td><code>date</code></td>
+                    <td class="type">date</td>
+                    <td class="optional">Nu</td>
+                    <td>Data scrape/indexare (ISO8601). Ex: <code>"2026-01-18T10:00:00Z"</code></td>
+                </tr>
+                <tr>
+                    <td><code>status</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Unul dintre: <code>"scraped"</code>, <code>"tested"</code>, <code>"published"</code>, <code>"verified"</code>. Progres: scraped → tested → published → verified.</td>
+                </tr>
+                <tr>
+                    <td><code>vdate</code></td>
+                    <td class="type">date</td>
+                    <td class="optional">Nu</td>
+                    <td>Data verificare (ISO8601). Setat doar când status="verified".</td>
+                </tr>
+                <tr>
+                    <td><code>expirationdate</code></td>
+                    <td class="type">date</td>
+                    <td class="optional">Nu</td>
+                    <td>Data expirare estimată job. Max vdate + 30 zile, sau extras din pagina job-ului.</td>
+                </tr>
+                <tr>
+                    <td><code>salary</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Interval salarial + valută. Format: <code>"MIN-MAX CURRENCY"</code> (ex: "5000-8000 RON", "4000 EUR"). String, nu array.</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Company Model</h2>
+            <p>Schema pentru documentele de tip companie stocate în Solr.</p>
+            
+            <table>
+                <tr>
+                    <th>Câmp</th>
+                    <th>Tip</th>
+                    <th>Necesar</th>
+                    <th>Descriere</th>
+                </tr>
+                <tr>
+                    <td><code>id</code></td>
+                    <td class="type">string</td>
+                    <td class="required">Da</td>
+                    <td>CIF/CUI al companiei (ex: "12345678"). Exact 8 cifre, fără prefix RO.</td>
+                </tr>
+                <tr>
+                    <td><code>company</code></td>
+                    <td class="type">string</td>
+                    <td class="required">Da</td>
+                    <td>Numele exact pentru potrivire job-uri. Numele legal din Registrul Comerțului. <strong>DIACRITICE NECESARE</strong>.</td>
+                </tr>
+                <tr>
+                    <td><code>status</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Unul dintre: <code>"activ"</code>, <code>"suspendat"</code>, <code>"inactiv"</code>, <code>"radiat"</code>. Dacă nu e activ, șterge job-urile.</td>
+                </tr>
+                <tr>
+                    <td><code>location</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Locații/adrese. <strong>DIACRITICE ACCEPTATE</strong>. Array.</td>
+                </tr>
+                <tr>
+                    <td><code>website</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Site oficial companie. Trebuie fi HTTP/HTTPS valid, fără slash trailing. Array.</td>
+                </tr>
+                <tr>
+                    <td><code>career</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Pagină de carieră oficială. HTTP/HTTPS valid, fără slash trailing. Array.</td>
+                </tr>
+                <tr>
+                    <td><code>brand</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Numele comercial/e al companiei (ex: ["AROBS"], ["Orange", "Orange Business"]). Array.</td>
+                </tr>
+                <tr>
+                    <td><code>group</code></td>
+                    <td class="type">string[]</td>
+                    <td class="optional">Nu</td>
+                    <td>Grupul parental al companiei (ex: ["Orange Group"]). Array.</td>
+                </tr>
+                <tr>
+                    <td><code>lastScraped</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Data ultimului scrape (format: YYYY-MM-DD, ex: "2026-03-05").</td>
+                </tr>
+                <tr>
+                    <td><code>scraperFile</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Numele fișierului scraper (ex: "epam.md").</td>
+                </tr>
+            </table>
+        </section>
+
+        <section>
+            <h2>Exemplu Job Document</h2>
+            <pre><code>[
+  {
+    "url": "https://example.com/careers/software-engineer",
+    "title": "Software Engineer",
+    "company": "Example SRL",
+    "cif": "12345678",
+    "location": ["Cluj-Napoca", "București"],
+    "workmode": "hybrid",
+    "date": "2026-02-17T00:00:00Z",
+    "status": "scraped",
+    "expirationdate": "2026-03-17T00:00:00Z",
+    "salary": "5000-8000 RON",
+    "tags": ["senior", "it"]
+  }
+]</code></pre>
+            
+            <div class="note">
+                <strong>Notă:</strong> Observă că <code>description</code> <strong>NU este inclus</strong> - acest câmp nu există în schema Job!
+            </div>
+        </section>
+
+        <section>
+            <h2>Exemplu Company Document</h2>
+            <pre><code>[
+  {
+    "id": "33159615",
+    "company": "AROBS TRANSILVANIA SOFTWARE S.A.",
+    "status": "activ",
+    "location": ["București", "Cluj-Napoca", "Iași", "Timișoara"],
+    "website": ["https://www.epam.com"],
+    "career": ["https://www.epam.com/careers/locations/romania"]
+  }
+]</code></pre>
+            
+            <div class="note">
+                <strong>Notă:</strong> Companiile sunt stocate în core-ul <code>company</code>, iar job-urile în core-ul <code>job</code>.
+            </div>
+        </section>
+
+        <section>
+            <h2>Note Importante</h2>
+            <div class="note">
+                <strong>⚠️ NU include câmpul "description"!</strong>
+                <p>Câmpul <code>description</code> <strong>NU există</strong> în schema Job. Nu îl adăuga niciodată în documentele trimise către Solr.</p>
+            </div>
+            <div class="note">
+                <strong> Câmpuri string[]</strong> sunt array-uri multi-valorice. În Solr sunt stocate ca arrays (ex: <code>["București", "Cluj-Napoca"]</code>).
+            </div>
+            <div class="note">
+                <strong>DIACRITICE:</strong> Asigură-te că folosești diacritice românești (ăâîșțĂÂÎȚ) acolo unde specificat în schema.
+            </div>
+            <div class="alert">
+                <strong>URL Unic:</strong> Câmpul <code>url</code> din Job trebuie să fie unic. Dacă adaugi un job cu același URL, acesta va fi actualizat (upsert).
+            </div>
+        </section>
+        
+        <section>
+            <h2>Tag-uri (tags)</h2>
+            <p>Câmpul <code>tags</code> este un array de string-uri pentru a clasifica job-urile. Tag-urile sunt <strong>lowercase și fără diacritice</strong>.</p>
+            
+            <h3>Seniority (nivel de experiență)</h3>
+            <table>
+                <tr>
+                    <th>Tag</th>
+                    <th>Descriere</th>
+                </tr>
+                <tr>
+                    <td><code>intern</code></td>
+                    <td>Intern / Student</td>
+                </tr>
+                <tr>
+                    <td><code>trainee</code></td>
+                    <td>Program de trainee</td>
+                </tr>
+                <tr>
+                    <td><code>entry-level</code></td>
+                    <td>Entry level / Fără experiență</td>
+                </tr>
+                <tr>
+                    <td><code>graduate</code></td>
+                    <td>Program pentru fresh graduates</td>
+                </tr>
+                <tr>
+                    <td><code>junior</code></td>
+                    <td>Junior (1-2 ani experiență)</td>
+                </tr>
+                <tr>
+                    <td><code>mid</code></td>
+                    <td>Mid-level (default, 2-5 ani)</td>
+                </tr>
+                <tr>
+                    <td><code>senior</code></td>
+                    <td>Senior (5+ ani), Lead, Manager</td>
+                </tr>
+                <tr>
+                    <td><code>consultant</code></td>
+                    <td>Principal, Director, Chief, VP</td>
+                </tr>
+            </table>
+            
+            <h3>Field/Domeniu</h3>
+            <table>
+                <tr>
+                    <th>Tag</th>
+                    <th>Descriere</th>
+                </tr>
+                <tr>
+                    <td><code>it</code></td>
+                    <td>IT, Programming, Frontend, Backend</td>
+                </tr>
+                <tr>
+                    <td><code>data-science</code></td>
+                    <td>Data, Analytics, Big Data</td>
+                </tr>
+                <tr>
+                    <td><code>ai</code></td>
+                    <td>AI, Machine Learning, ML</td>
+                </tr>
+                <tr>
+                    <td><code>cloud</code></td>
+                    <td>Cloud, Azure, AWS, GCP</td>
+                </tr>
+                <tr>
+                    <td><code>devops</code></td>
+                    <td>DevOps, CI/CD, Kubernetes</td>
+                </tr>
+                <tr>
+                    <td><code>qa</code></td>
+                    <td>QA, Testing</td>
+                </tr>
+                <tr>
+                    <td><code>finance</code></td>
+                    <td>Finance, Accounting, Banking</td>
+                </tr>
+                <tr>
+                    <td><code>hr</code></td>
+                    <td>Human Resources</td>
+                </tr>
+                <tr>
+                    <td><code>sales</code></td>
+                    <td>Sales, Pre-sales</td>
+                </tr>
+                <tr>
+                    <td><code>project-management</code></td>
+                    <td>Project Management, PM</td>
+                </tr>
+                <tr>
+                    <td><code>operations</code></td>
+                    <td>Operations, Supply Chain</td>
+                </tr>
+                <tr>
+                    <td><code>customer-service</code></td>
+                    <td>Customer Service, Support</td>
+                </tr>
+                <tr>
+                    <td><code>sap</code></td>
+                    <td>SAP, ABAP</td>
+                </tr>
+            </table>
+            
+            <h3>Exemplu tags</h3>
+            <pre><code>"tags": ["senior", "it"]
+"tags": ["junior", "data-science"]
+"tags": ["mid", "devops", "cloud"]</code></pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>📅 Ultima actualizare: Mar 2026</p>
+    </footer>
+</body>
+</html>
