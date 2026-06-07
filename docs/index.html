@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Peviitor OpenCode AI Scrapers - Documentație</title>
+    <title>AROBS Scraper — Node.js - Documentație</title>
     <style>
         * {
             margin: 0;
@@ -167,8 +167,8 @@
 </head>
 <body>
     <header>
-        <h1>📋 Peviitor OpenCode AI Scrapers</h1>
-        <p>Documentație completă pentru proiectul de automatizare scraping job-uri de pe peviitor.ro</p>
+        <h1>📋 AROBS Scraper — Node.js</h1>
+        <p>Documentație completă pentru scraper-ul Node.js de job-uri AROBS Transilvania Software</p>
     </header>
 
     <nav>
@@ -186,33 +186,33 @@
     <main>
         <section>
             <h2>Bine ai venit! 👋</h2>
-            <p>Acest proiect conține instrumente de automatizare pentru colectarea și actualizarea datelor despre locuri de muncă de pe platforma <strong>peviitor.ro</strong>.</p>
+            <p>Acest proiect este un scraper <strong>Node.js</strong> standalone care extrage automat locurile de muncă de pe platforma de cariere <strong>iCIMS</strong> a companiei <strong>AROBS Transilvania Software</strong> (CIF 11291045).</p>
             
             <div class="alert alert-info">
-                <strong>Scop:</strong> Utilizăm AI (OpenCode) pentru a automatiza procesul de scraping al job-urilor de pe site-urile companiilor și actualizarea acestora în Solr.
+                <strong>Scop:</strong> Colectăm job-urile AROBS de pe careers-arobs.icims.com prin HTML scraping cu cheerio și le indexăm în Apache Solr pentru agregare pe peviitor.ro.
             </div>
         </section>
 
         <section>
             <h2>🎯 Obiective</h2>
-            <p>Construim un sistem automatizat de colectare a job-urilor pentru companiile IT din România:</p>
+            <p>Sistem automatizat de colectare a job-urilor AROBS:</p>
             
             <div class="card-grid">
                 <div class="card">
-                    <h4>1. Scraping Job-uri</h4>
-                    <p>Extragem automat locurile de muncă de pe paginile de cariere ale companiilor.</p>
+                    <h4>1. Scraping iCIMS</h4>
+                    <p>Extragem locurile de muncă de pe careers-arobs.icims.com/jobs/search prin parsare HTML cu cheerio.</p>
                 </div>
                 <div class="card">
-                    <h4>2. Extragere Tag-uri</h4>
-                    <p>Identificăm automat nivelul de senioritate (junior/mid/senior/consultant) și domeniul (IT/Data Science/Cloud/Finance/etc.).</p>
+                    <h4>2. Validare ANAF</h4>
+                    <p>Verificăm compania în registrul ANAF (CIF 11291045) pentru status activ și date oficiale.</p>
                 </div>
                 <div class="card">
                     <h4>3. Indexare Solr</h4>
-                    <p>Încărcăm datele structurate în Apache Solr pentru căutare și filtrare rapidă.</p>
+                    <p>Încărcăm datele structurate în Apache Solr (core-urile job și company) pentru căutare și filtrare.</p>
                 </div>
                 <div class="card">
-                    <h4>4. Prompts Reutilizabile</h4>
-                    <p>Creăm fișiere de prompt specifice pentru fiecare companie, reutilizabile pentru actualizări periodice.</p>
+                    <h4>4. Testare Jest</h4>
+                    <p>Teste unitare, de integrare și E2E cu Jest pentru validarea corectitudinii datelor.</p>
                 </div>
             </div>
         </section>
@@ -222,20 +222,20 @@
             
             <div class="card-grid">
                 <div class="card">
-                    <h4>🤖 Automatizare Browser</h4>
-                    <p>Controlăm Chrome prin DevTools Protocol pentru a naviga pe site-uri și a extrage date despre job-uri.</p>
+                    <h4>🌐 Scraping HTML</h4>
+                    <p>Folosim <strong>node-fetch</strong> pentru a descărca paginile iCIMS și <strong>cheerio</strong> pentru a parsa și extrage job-urile.</p>
                 </div>
                 <div class="card">
-                    <h4>🔍 Scraping Inteligent</h4>
-                    <p>AI-ul analizează structura site-urilor companiilor pentru a găsi paginile de cariere și a extrage informațiile corecte.</p>
+                    <h4>🏢 Validare Companie</h4>
+                    <p>Interogăm <strong>API-ul ANAF</strong> (via demoanaf.ro) și <strong>API-ul Peviitor</strong> pentru validarea companiei.</p>
                 </div>
                 <div class="card">
-                    <h4>💾 Stocare Date</h4>
-                    <p>Datele sunt trimise către Apache Solr pentru indexare și căutare rapidă.</p>
+                    <h4>💾 Indexare Solr</h4>
+                    <p>Datele sunt trimise către <strong>Apache Solr</strong> (solr.peviitor.ro) pentru indexare și upsert.</p>
                 </div>
                 <div class="card">
                     <h4>✅ Testare Automată</h4>
-                    <p>Testele Playwright verifică că fluxurile de lucru funcționează corect.</p>
+                    <p>Testele <strong>Jest</strong> verifică parsarea HTML, extragerea tag-urilor, maparea locațiilor și fluxurile complete.</p>
                 </div>
             </div>
         </section>
@@ -243,50 +243,54 @@
         <section>
             <h2>Fluxul de Lucru</h2>
             
-            <pre><code>1. Găsește compania în Solr company core (https://solr.peviitor.ro/solr/company/select)
+            <pre><code>1. Validează compania via ANAF API
           ↓
-2. Rulează comanda /scrape [nume_companie]
+2. Verifică job-urile existente în Solr
           ↓
-3. AI-ul deschide Chrome și navighează pe site
+3. Rulează scraperul iCIMS cu cheerio
           ↓
 4. Extrage job-urile conform Job Schema
           ↓
-5. Trimite datele către Solr
+5. Mapare tag-uri (seniority + category + skills)
           ↓
-6. Verifică cu testele Playwright</code></pre>
+6. Trimite datele către Solr (job + company core)
+          ↓
+7. Rulează testele Jest pentru validare</code></pre>
         </section>
 
         <section>
-            <h2>💻 Arhitectură Cloud + Local</h2>
-            <p>Acest proiect folosește <strong>AI în cloud</strong> (Big Pickle via OpenCode) pentru coding asistat, împreună cu servicii locale.</p>
+            <h2>💻 Arhitectură Node.js Standalone</h2>
+            <p>Acest proiect este un scraper Node.js pur, fără dependențe de browser sau Docker.</p>
             
             <div class="alert alert-info">
                 <strong>Arhitectura:</strong>
                 <ul>
-                    <li><strong>AI Big Pickle</strong> - rulează în cloud-ul OpenCode (opencode.ai)</li>
-                    <li><strong>Apache Solr</strong> - în Docker container local</li>
-                    <li><strong>Chrome DevTools</strong> - pentru automatizare browser (rulează local)</li>
-                    <li><strong>OpenCode</strong> - CLI care conectează AI cloud la serviciile locale</li>
+                    <li><strong>Node.js 20+</strong> - runtime JavaScript</li>
+                    <li><strong>cheerio</strong> - parsare HTML rapidă (fără browser)</li>
+                    <li><strong>node-fetch</strong> - cereri HTTP</li>
+                    <li><strong>Apache Solr</strong> - stocare date (solr.peviitor.ro)</li>
+                    <li><strong>Jest</strong> - testare automată</li>
+                    <li><strong>ESM Modules</strong> - import/export modern</li>
                 </ul>
             </div>
 
             <div class="alert">
-                <strong>Cerințe Hardware:</strong>
+                <strong>Cerințe Sistem:</strong>
                 <ul>
-                    <li><strong>RAM: 8 GB minim</strong> (16 GB recomandat)</li>
-                    <li><strong>CPU: 2+ core-uri</strong> (4+ recomandat)</li>
-                    <li><strong>Stocare: 20 GB liberi</strong></li>
-                    <li>Vezi <a href="setup.html">detalii complete</a></li>
+                    <li><strong>Node.js 20+</strong> (recomandat 20 LTS)</li>
+                    <li><strong>npm</strong> (inclus cu Node.js)</li>
+                    <li><strong>Acces la internet</strong> (pentru ANAF API, Solr, iCIMS)</li>
+                    <li><strong>SOLR_AUTH</strong> configurat în variabile de mediu</li>
                 </ul>
             </div>
 
             <div class="alert alert-info">
                 <strong>🔒 Confidențialitate:</strong>
                 <ul>
-                    <li>Datele de scraping sunt stocate pe serverul Solr</li>
-                    <li>Navigarea Chrome este locală</li>
-                    <li>Solr rulează pe serverul de producție (solr.peviitor.ro)</li>
-                    <li>AI-ul procesează în cloud OpenCode</li>
+                    <li>Datele de scraping sunt trimise direct la Solr (solr.peviitor.ro)</li>
+                    <li>Nu se stochează date local (doar cache temporar în tmp/)</li>
+                    <li>Autentificarea Solr se face prin Basic Auth</li>
+                    <li>Nu se folosesc servicii third-party pentru procesare</li>
                 </ul>
             </div>
         </section>
@@ -304,12 +308,12 @@
                     <td>Explorarea folderelor și fișierelor</td>
                 </tr>
                 <tr>
-                    <td><a href="commands.html">Comenzi Personalizate</a></td>
-                    <td>Comenziile /scrape, /update-solr, /login-solr</td>
+                    <td><a href="commands.html">Comenzi</a></td>
+                    <td>Scripturi npm și comenzi CLI</td>
                 </tr>
                 <tr>
                     <td><a href="tests.html">Testare</a></td>
-                    <td>Cum rulează testele Playwright</td>
+                    <td>Cum rulează testele Jest</td>
                 </tr>
                 <tr>
                     <td><a href="schemas.html">Schema Date</a></td>
@@ -328,7 +332,7 @@
     </main>
 
     <footer>
-        <p>📅 Ultima actualizare: Mar 2026</p>
+        <p>📅 Ultima actualizare: Iun 2026</p>
         <p>Pentru întrebări, consultă documentația sau contactează echipa.</p>
     </footer>
 </body>

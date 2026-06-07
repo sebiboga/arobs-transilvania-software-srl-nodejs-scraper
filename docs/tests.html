@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste - Peviitor OpenCode AI Scrapers</title>
+    <title>Teste - AROBS Scraper — Node.js</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
@@ -34,7 +34,7 @@
 </head>
 <body>
     <header>
-        <h1>🧪 Teste Playwright</h1>
+        <h1>🧪 Teste Jest</h1>
     </header>
 
     <nav>
@@ -52,10 +52,10 @@
     <main>
         <section>
             <h2>Despre Teste</h2>
-            <p>Proiectul folosește <strong>Playwright</strong> pentru testare automată. Testele validează că fluxurile de lucru funcționează corect.</p>
+            <p>Proiectul folosește <strong>Jest</strong> ca framework de testare. Testele sunt împărțite în trei categorii: unitare, integrare și end-to-end.</p>
             
             <div class="alert">
-                <strong>Notă:</strong> Înainte de a rula testele, trebuie să rulezi <code>npm install</code> în folderul <code>tests/</code> pentru a instala dependențele.
+                <strong>Notă:</strong> Testele sunt configurate cu <code>"type": "module"</code> și folosesc flag-ul <code>--experimental-vm-modules</code> pentru suport ESM în Jest. Configurarea se află în <code>package.json</code>.
             </div>
         </section>
 
@@ -65,47 +65,47 @@
                 <tr>
                     <th>Fișier</th>
                     <th>Descriere</th>
-                    <th>Tip</th>
+                    <th>Categorie</th>
                 </tr>
                 <tr>
-                    <td><code>login-solr.test.ts</code></td>
-                    <td>Testează comanda /login-solr - deschide Solr în Chrome și face login</td>
-                    <td>Browser Automation</td>
+                    <td><code>tests/unit/index.test.js</code></td>
+                    <td>Teste pentru parsarea paginii iCIMS cu cheerio: parseJobsPage, parseLocation, getSeniorityTag, getCategoryTags, extractSkillTags</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>update-solr.test.ts</code></td>
-                    <td>Testează comanda /update-solr - adaugă job documents în Solr</td>
-                    <td>API Test</td>
+                    <td><code>tests/unit/company.test.js</code></td>
+                    <td>Teste pentru validarea companiei: ANAF API, Peviitor API, Company Model Validation</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>delete-solr.test.ts</code></td>
-                    <td>Testează comanda /delete-solr - șterge job documents din Solr</td>
-                    <td>API Test</td>
+                    <td><code>tests/unit/solr.test.js</code></td>
+                    <td>Teste pentru operații Solr: query, upsert, delete jobs/company</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>add-website.test.ts</code></td>
-                    <td>Testează comanda /add-website - adaugă companie nouă în Solr company core</td>
-                    <td>API Test</td>
+                    <td><code>tests/unit/demoanaf.test.js</code></td>
+                    <td>Teste pentru interfața ANAF API: getCompanyFromANAF, searchCompany</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>add-website-new-workflow.test.ts</code></td>
-                    <td>Testează fluxul complet /add-website cu website lookup</td>
-                    <td>File Test</td>
+                    <td><code>tests/unit/topics.test.js</code></td>
+                    <td>Teste pentru validarea TOPICS.md</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>remove-404.test.ts</code></td>
-                    <td>Testează comanda /remove-404 - validează URL-uri și șterge job-uri inactive</td>
-                    <td>API + Browser Test</td>
+                    <td><code>tests/unit/public.test.js</code></td>
+                    <td>Teste pentru validarea PUBLIC.md</td>
+                    <td>Unitar</td>
                 </tr>
                 <tr>
-                    <td><code>remove-404-vdate.test.ts</code></td>
-                    <td>Testează actualizarea câmpului vdate în /remove-404</td>
-                    <td>API Test</td>
+                    <td><code>tests/e2e/scraper.test.js</code></td>
+                    <td>Teste E2E care fac fetch real la careers-arobs.icims.com și parsează răspunsul live. Verifică conexiunea și parsarea.</td>
+                    <td>E2E</td>
                 </tr>
                 <tr>
-                    <td><code>remove-404-chrome.test.ts</code></td>
-                    <td>Testează verificarea conținutului paginii cu Chrome în /remove-404</td>
-                    <td>Browser Test</td>
+                    <td><code>tests/integration/workflow.test.js</code></td>
+                    <td>Teste de integrare pentru fluxul complet: mapare locații, extracție tag-uri, detectare workmode</td>
+                    <td>Integrare</td>
                 </tr>
             </table>
         </section>
@@ -113,101 +113,98 @@
         <section>
             <h2>Cum să Rulezi Testele</h2>
             
-            <h3>1. Prerechizite</h3>
-            <div class="step">Porneste Chrome cu debugging:</div>
-            <pre><code>cd ..
-powershell -ExecutionPolicy Bypass -File start-chrome.ps1</code></pre>
+            <h3>1. Instalează dependențele</h3>
+            <div class="step">Rulează în directorul rădăcină:</div>
+            <pre><code>npm install</code></pre>
             
-            <div class="step">Porneste Solr (pentru testele Solr):</div>
-            <pre><code>docker start peviitor-solr</code></pre>
+            <h3>2. Rulează toate testele</h3>
+            <pre><code>npm test</code></pre>
             
-            <h3>2. Instalează Dependențele</h3>
-            <pre><code>cd tests
-npm install</code></pre>
+            <h3>3. Rulează o categorie specifică</h3>
+            <pre><code>npm run test:unit
+npm run test:integration
+npm run test:e2e</code></pre>
             
-            <h3>3. Rulează Toate Testele</h3>
-            <pre><code>npx playwright test</code></pre>
-            
-            <h3>4. Rulează un Test Specific</h3>
-            <pre><code>npx playwright test login-solr.test.ts
-npx playwright test update-solr.test.ts
-npx playwright test delete-solr.test.ts
-npx playwright test add-website.test.ts</code></pre>
+            <h3>4. Rulează un fișier specific</h3>
+            <pre><code>node --no-deprecation --experimental-vm-modules node_modules/jest/bin/jest.js tests/unit/index.test.js</code></pre>
         </section>
 
         <section>
             <h2>Rezultate Teste</h2>
             <p>Când rulezi testele, vei vedea rezultate ca:</p>
             
-            <pre><code>Running 3 tests using 1 worker
+            <pre><code> PASS  tests/unit/index.test.js
+  ✓ parseJobsPage parses job listings from iCIMS HTML (12 ms)
+  ✓ parseJobsPage handles empty page (2 ms)
+  ✓ parseLocation handles RO prefix (1 ms)
+  ✓ parseLocation handles multiple locations (1 ms)
+  ✓ parseLocation handles RO only (1 ms)
+  ✓ parseLocation handles empty (1 ms)
+  ✓ getSeniorityTag returns senior for senior level (1 ms)
+  ✓ getSeniorityTag returns mid for intermediate (2 ms)
+  ✓ getCategoryTags maps Development to it (1 ms)
+  ✓ extractSkillTags extracts Java tag (1 ms)
+  ✓ extractSkillTags extracts embedded tag (1 ms)
+  ✓ extractSkillTags extracts multiple tags (1 ms)
 
-  ok 1 [Chrome] › update-solr.test.ts:9:5 › verify job core is accessible <span class="test-pass">✓</span>
-  ok 2 [Chrome] › update-solr.test.ts:18:5 › query existing jobs <span class="test-pass">✓</span>
-  ok 3 [Chrome] › update-solr.test.ts:26:5 › add new job document following Job schema <span class="test-pass">✓</span>
+✓ <span class="test-pass">12 passed</span> (12 ms)</code></pre>
 
-  <span class="test-pass">3 passed</span></code></pre>
+            <p>Rezultatul este generat și în format HTML via <strong>jest-html-reporter</strong> (fișierul <code>test-report.html</code>).</p>
         </section>
 
         <section>
-            <h2>Configurare Playwright</h2>
-            <p>Fișierul <code>playwright.config.ts</code> conține configurarea:</p>
-            <pre><code>import { defineConfig, devices } from "@playwright/test";
-
-export default defineConfig({
-  testDir: ".",
-  timeout: 30000,
-  use: {
-    baseURL: "https://solr.peviitor.ro",
-    headless: false,
-    launchOptions: {
-      args: ["--remote-debugging-port=9222"],
-    },
-  },
-  projects: [
-    {
-      name: "Chrome",
-      use: { ...devices["Desktop Chrome"] },
-    },
-  ],
-});</code></pre>
+            <h2>Configurare Jest</h2>
+            <p>Configurarea se află în <code>package.json</code>:</p>
+            <pre><code>{
+  "jest": {
+    "testEnvironment": "node",
+    "testMatch": ["**/tests/**/*.test.js"],
+    "verbose": true,
+    "reporters": ["default", "jest-html-reporter"],
+    "testTimeout": 30000
+  }
+}</code></pre>
             
             <div class="alert">
-                <strong>Important:</strong> Testele folosesc Chrome-ul care este deja pornit cu debugging pe portul 9222 (de la <code>start-chrome.ps1</code>).
+                <strong>Important:</strong> Folosim <code>--experimental-vm-modules</code> pentru a permite Jest să ruleze cu ESM (ECMAScript Modules). Toate fișierele sursă folosesc <code>import</code>/<code>export</code>.
             </div>
+        </section>
+
+        <section>
+            <h2>Strategia de Mock</h2>
+            <p>Pentru testele unitare, folosim mock-uri pentru API-urile externe:</p>
+            <ul>
+                <li><strong>ANAF API</strong> - mock la fetch pentru a returna date statice</li>
+                <li><strong>Solr API</strong> - mock la fetch pentru a simula răspunsurile Solr</li>
+                <li><strong>Peviitor API</strong> - mock la fetch pentru date companie</li>
+                <li><strong>iCIMS HTML</strong> - mock cu HTML static pentru parsare cheerio</li>
+            </ul>
+            
+            <p>Testele E2E (<code>scraper.test.js</code>) fac fetch real la iCIMS - nu folosesc mock-uri pentru a verifica conexiunea live.</p>
         </section>
 
         <section>
             <h2>Adaugă Teste Noi</h2>
             <p>Pentru a adăuga un test nou:</p>
-            <div class="step">1. creează un fișier <code>*.test.ts</code> în folderul <code>tests/</code></div>
-            <div class="step">2. Definește testul folosind Playwright API</div>
-            <div class="step">3. Rulează testul pentru a verifica că funcționează</div>
-            <div class="step">4. Urmărește fluxul de lucru din <code>/instructions</code> pentru a actualiza documentația după modificări</div>
+            <div class="step">1. creează un fișier <code>*.test.js</code> în folderul <code>tests/unit/</code>, <code>tests/integration/</code> sau <code>tests/e2e/</code></div>
+            <div class="step">2. Importă funcțiile de testat din modulele sursă</div>
+            <div class="step">3. Definește testele folosind <code>describe</code> și <code>it</code></div>
+            <div class="step">4. Rulează testul pentru a verifica că funcționează</div>
             
             <h3>Exemplu:</h3>
-            <pre><code>import { test, expect } from "@playwright/test";
+            <pre><code>import { parseJobsPage } from "../../index.js";
 
-test("descriere test", async ({ page }) => {
-    // Logica testului
-    await page.goto("https://solr.peviitor.ro/solr/");
-    // ...
+describe("parseJobsPage", () => {
+  it("parses job title correctly", () => {
+    const result = parseJobsPage(sampleHtml);
+    expect(result.jobs[0].title).toBe("Software Engineer");
+  });
 });</code></pre>
-            
-            <div class="alert">
-                <strong>Important:</strong> Când testezi funcții care folosesc Job Schema, asigură-te că NU incluzi câmpul <code>description</code> - acesta nu există în schema Job!
-            </div>
-        </section>
-        
-        <section>
-            <h2>Bug-uri Fix-uite</h2>
-            <ul>
-                <li><strong>update-solr.test.ts</strong> - Corectat formatul Solr delete-by-query de la <code>"_delete_":true</code> la formatul corect: <code>{"delete":{"query":"url:\"https://example.com/job\""}}</code></li>
-            </ul>
         </section>
     </main>
 
     <footer>
-        <p>📅 Ultima actualizare: Mar 2026</p>
+        <p>📅 Ultima actualizare: Iun 2026</p>
     </footer>
 </body>
 </html>

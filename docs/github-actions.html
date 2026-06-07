@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Actions - Peviitor OpenCode AI Scrapers</title>
+    <title>GitHub Actions - AROBS Scraper — Node.js</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
@@ -16,7 +16,7 @@
         nav a.active { background: #667eea; }
         main { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
         section { background: white; border-radius: 8px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        h2 { color: #2c3e50; border-bottom: 2px solid; padding-bottom: 0.5rem; margin-bottom #667eea: 1rem; }
+        h2 { color: #2c3e50; border-bottom: 2px solid #667eea; padding-bottom: 0.5rem; margin-bottom: 1rem; }
         h3 { color: #34495e; margin-top: 1.5rem; margin-bottom: 0.5rem; }
         code { background: #f4f4f4; padding: 0.2rem 0.4rem; border-radius: 3px; font-family: monospace; }
         pre { background: #282c34; color: #abb2bf; padding: 1rem; border-radius: 6px; overflow-x: auto; margin: 1rem 0; }
@@ -53,14 +53,14 @@
     <main>
         <section>
             <h2>Despre GitHub Actions</h2>
-            <p>Proiectul include workflows GitHub Actions care permit scraping-ul direct din GitHub, fără a necesita configurare locală. Aceste workflows rulează pe servere Ubuntu și folosesc Chrome pentru automatizare.</p>
+            <p>Proiectul include workflows GitHub Actions pentru automatizarea scraping-ului și testării direct din GitHub, fără a necesita configurare locală.</p>
             
             <div class="note">
                 <strong>Notă:</strong> GitHub Actions este util pentru:
                 <ul>
-                    <li>Scraping ocazional al unei companii</li>
-                    <li>Automatizarea fără configurare locală</li>
-                    <li>Scraping de pe orice calculator cu acces la GitHub</li>
+                    <li>Scraping periodic automat (în fiecare luni)</li>
+                    <li>Testare automată la fiecare push/PR</li>
+                    <li>Deploy continuu la push pe master</li>
                 </ul>
             </div>
         </section>
@@ -74,165 +74,217 @@
                     <th>Fișier</th>
                 </tr>
                 <tr>
-                    <td><code>opencode_scraper_to_solr</code></td>
-                    <td>Scraper automat pentru o companie specifică - scrapează job-uri și le trimite în Solr</td>
-                    <td><code>.github/workflows/opencode_scraper_to_solr.yml</code></td>
+                    <td><code>AROBS Scraper</code></td>
+                    <td>Scrapează job-urile AROBS și le trimite în Solr. Rulează automat în fiecare luni la 6:00 UTC sau manual prin workflow_dispatch.</td>
+                    <td><code>.github/workflows/scrape.yml</code></td>
                 </tr>
                 <tr>
-                    <td><code>opencode_cli</code></td>
-                    <td>Rulare OpenCode CLI direct în GitHub Actions</td>
-                    <td><code>.github/workflows/opencode_cli.yml</code></td>
+                    <td><code>Tests</code></td>
+                    <td>Rulează testele Jest la fiecare push sau pull request pe branch-ul master.</td>
+                    <td><code>.github/workflows/test.yml</code></td>
                 </tr>
                 <tr>
-                    <td><code>pages</code></td>
-                    <td>Deploy documentației HTML pe GitHub Pages</td>
-                    <td><code>.github/workflows/pages.yml</code></td>
+                    <td><code>Deploy</code></td>
+                    <td>Rulează scraper-ul la fiecare push pe branch-ul master. Asigură că datele sunt actualizate după orice modificare.</td>
+                    <td><code>.github/workflows/deploy.yml</code></td>
                 </tr>
             </table>
         </section>
 
         <section>
-            <h2>Cum să Scraperzi o Companie prin GitHub Actions</h2>
+            <h2>1. AROBS Scraper (scrape.yml)</h2>
+            
+            <h3>Programare:</h3>
+            <ul>
+                <li><strong>Cron:</strong> <code>0 6 * * 1</code> - În fiecare luni la 6:00 UTC (9:00 România)</li>
+                <li><strong>Manual:</strong> Prin <code>workflow_dispatch</code> din interfața GitHub</li>
+            </ul>
             
             <h3>Pași:</h3>
+            <div class="step">1. Checkout repository</div>
+            <div class="step">2. Setup Node.js 20</div>
+            <div class="step">3. Instalează dependențe: <code>npm ci</code></div>
+            <div class="step">4. Rulează scraper-ul: <code>node index.js</code></div>
             
-            <div class="step">1. Asigură-te că ai Secrets configurate</div>
-            <p>În repository-ul GitHub, trebuie să adaugi secretele pentru Solr:</p>
-            <ul>
-                <li>Mergi la <strong>Settings → Secrets and variables → Actions</strong></li>
-                <li>Adaugă un secret nou: <code>SOLR_USER</code> (username-ul tău Solr)</li>
-                <li>Adaugă un secret nou: <code>SOLR_PASSWD</code> (parola ta Solr)</li>
-            </ul>
-            
-            <div class="step">2. Rulează Workflow-ul</div>
-            <ul>
-                <li>Mergi la tab-ul <strong>Actions</strong> în repository</li>
-                <li>Selectează <strong>OpenCode Scraper to Solr</strong></li>
-                <li>Click pe butonul <strong>Run workflow</strong></li>
-                <li>Introdu numele companiei (ex: <code>AROBS</code>)</li>
-                <li>Click pe <strong>Run workflow</strong></li>
-            </ul>
-            
-            <div class="step">3. Verifică rezultatele</div>
-            <p>După ce workflow-ul rulează:</p>
-            <ul>
-                <li>Click pe workflow run pentru a vedea progress-ul</li>
-                <li>Verifică log-urile pentru numărul de job-uri scrape-ate</li>
-                <li>Verifică în Solr că job-urile au fost adăugate</li>
-            </ul>
-            
-            <div class="success">
-                <strong>Ce face workflow-ul automat:</strong>
-                <ul>
-                    <li>Instalează Chrome și OpenCode</li>
-                    <li>Rulează comanda /scrape pentru compania specificată</li>
-                    <li>Pune job-urile în Solr</li>
-                    <li>Dacă se creează un nou fișier scraper (ex: <code>zira-marketing.md</code>), îl commită automat în repo</li>
-                    <li>Actualizează câmpurile <code>lastScraped</code> și <code>scraperFile</code> în Solr</li>
-                </ul>
-            </div>
-        </section>
+            <h3>Fișier YAML:</h3>
+            <pre><code>name: AROBS Scraper
 
-        <section>
-            <h2>Exemplu de Rulare</h2>
-            
-            <h3>Workflow Dispatch cu input:</h3>
-            <pre><code>Company name: AROBS</code></pre>
-            
-            <h3>Rezultat așteptat:</h3>
-            <pre><code>✓ Scraped jobs for AROBS
-✓ Pushed jobs to Solr
-✓ Updated company in Solr (lastScraped: 2026-06-06)</code></pre>
-        </section>
+on:
+  schedule:
+    - cron: '0 6 * * 1'  # Every Monday at 6:00 UTC
+  workflow_dispatch:
 
-        <section>
-            <h2>Cum Funcționează</h2>
-            
-            <h3>Fluxul de Lucru:</h3>
-            <pre><code>1. Workflow trigger (manual)
-        ↓
-2. Setup: Chrome + Node.js + OpenCode
-        ↓
-3. Run /scrape COMMAND (passed as input)
-        ↓
-4. AI navighează la careers page companiei
-        ↓
-5. Extrage job-urile (Romania only)
-        ↓
-6. Push company → Solr company core
-        ↓
-7. Push jobs → Solr job core
-        ↓
-8. Check pentru fișiere noi scraper
-        ↓
-9. Commit + Push fișier scraper nou (dacă există)
-        ↓
-10. Update lastScraped + scraperFile în Solr</code></pre>
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: node index.js
+        env:
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}</code></pre>
             
             <div class="alert">
-                <strong>Important:</strong> Workflow-ul folosește <code>${{ secrets.SOLR_USER }}</code> și <code>${{ secrets.SOLR_PASSWD }}</code> pentru autentificare. Acestea trebuie configurate în GitHub Secrets!
+                <strong>Important:</strong> Workflow-ul folosește <code>${{ secrets.SOLR_AUTH }}</code> pentru autentificare. Acest secret trebuie configurat în GitHub Settings!
             </div>
+        </section>
+
+        <section>
+            <h2>2. Tests (test.yml)</h2>
+            
+            <h3>Declanșare:</h3>
+            <ul>
+                <li><strong>Push</strong> pe branch-ul master</li>
+                <li><strong>Pull Request</strong> către master</li>
+            </ul>
+            
+            <h3>Pași:</h3>
+            <div class="step">1. Checkout repository</div>
+            <div class="step">2. Setup Node.js 20</div>
+            <div class="step">3. Instalează dependențe: <code>npm ci</code></div>
+            <div class="step">4. Rulează toate testele: <code>npm test</code></div>
+            
+            <h3>Fișier YAML:</h3>
+            <pre><code>name: Tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: npm test</code></pre>
+            
+            <div class="success">
+                <strong>✓ Nu necesită SOLR_AUTH</strong> - Testele unitare nu au nevoie de conexiune la Solr (folosesc mock-uri).
+            </div>
+        </section>
+
+        <section>
+            <h2>3. Deploy (deploy.yml)</h2>
+            
+            <h3>Declanșare:</h3>
+            <ul>
+                <li><strong>Push</strong> pe branch-ul master</li>
+            </ul>
+            
+            <h3>Pași:</h3>
+            <div class="step">1. Checkout repository</div>
+            <div class="step">2. Setup Node.js 20</div>
+            <div class="step">3. Instalează dependențe: <code>npm ci</code></div>
+            <div class="step">4. Rulează scraper-ul: <code>node index.js</code></div>
+            
+            <h3>Fișier YAML:</h3>
+            <pre><code>name: Deploy
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm ci
+      - run: node index.js
+        env:
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}</code></pre>
+            
+            <div class="alert">
+                <strong>Important:</strong> Workflow-ul de deploy rulează scraper-ul la fiecare push pe master, asigurând că indexul Solr este mereu sincronizat cu codul.
+            </div>
+        </section>
+
+        <section>
+            <h2>Cum să Configurezi Secretele</h2>
+            
+            <div class="step">1. Mergi la repository-ul GitHub</div>
+            <div class="step">2. Mergi la <strong>Settings → Secrets and variables → Actions</strong></div>
+            <div class="step">3. Click pe butonul <strong>New repository secret</strong></div>
+            <div class="step">4. Adaugă secretul:
+                <ul>
+                    <li><strong>Name:</strong> <code>SOLR_AUTH</code></li>
+                    <li><strong>Value:</strong> <code>solr:SolrRocks</code> (sau valoarea reală)</li>
+                </ul>
+            </div>
+            <div class="step">5. Click pe <strong>Add secret</strong></div>
+            
+            <div class="note">
+                <strong>Notă:</strong> Secretele sunt criptate și nu pot fi citite de utilizatori odată salvate. Sunt disponibile doar în timpul execuției workflow-urilor.
+            </div>
+        </section>
+
+        <section>
+            <h2>Fluxul de Lucru în GitHub Actions</h2>
+            
+            <pre><code>Luni 6:00 UTC (programat)
+    ↓
+scrape.yml → npm ci → node index.js
+    ↓
+node-fetch → careers-arobs.icims.com
+    ↓
+cheerio parse → job-uri
+    ↓
+ANAF API → validare companie
+    ↓
+Solr upsert → job + company core
+    ↓
+✓ Complet
+
+Push pe master
+    ↓
+test.yml → npm ci → npm test  (CI)
+deploy.yml → npm ci → node index.js  (deploy)
+    ↓
+✓ Teste trecute + Date actualizate</code></pre>
         </section>
 
         <section>
             <h2>Troubleshooting</h2>
             
-            <h3>Probleme Comune:</h3>
-            
             <table>
                 <tr>
-                    <th>Problem</th>
+                    <th>Problemă</th>
                     <th>Soluție</th>
                 </tr>
                 <tr>
-                    <td>Workflow-ul eșuează cu "Chrome not found"</td>
-                    <td>Verifică că Chrome este instalat corect pe runner-ul GitHub</td>
+                    <td>Workflow-ul eșuează cu "SOLR_AUTH not set"</td>
+                    <td>Verifică că secretul <code>SOLR_AUTH</code> este configurat în Settings → Secrets</td>
                 </tr>
                 <tr>
-                    <td>Nu se pot trimite date la Solr</td>
-                    <td>Verifică că secretele SOLR_USER și SOLR_PASSWD sunt configurate corect</td>
+                    <td>Job-urile nu sunt în Solr după workflow</td>
+                    <td>Verifică log-urile workflow-ului pentru erori la Solr upsert</td>
                 </tr>
                 <tr>
-                    <td>0 jobs scraped</td>
-                    <td>Verifică că URL-ul careers page este corect în Solr</td>
+                    <td>Workflow-ul de test eșuează</td>
+                    <td>Verifică log-urile pentru erori specifice de test</td>
                 </tr>
                 <tr>
-                    <td>Fișierul scraper nu se creează</td>
-                    <td>Verifică că workflow-ul are permisiuni de write la repo</td>
-                </tr>
-            </table>
-        </section>
-
-        <section>
-            <h2>Avantaje vs. Metoda Locală</h2>
-            
-            <table>
-                <tr>
-                    <th>GitHub Actions</th>
-                    <th>Scraping Local</th>
-                </tr>
-                <tr>
-                    <td>Nu necesită instalare Chrome/OpenCode</td>
-                    <td>Necessită Chrome + PowerShell + Docker</td>
-                </tr>
-                <tr>
-                    <td>Rulează de oriunde</td>
-                    <td>Rulează doar de pe calculatorul local</td>
-                </tr>
-                <tr>
-                    <td>Automatizare completă (inclusiv commit)</td>
-                    <td>Trebuie să faci commit manual</td>
-                </tr>
-                <tr>
-                    <td>Limitări: minute GitHub Actions</th>
-                    <td>Nelimitat</td>
+                    <td>Workflow-ul nu pornește la programare</td>
+                    <td>Verifică că branch-ul default este master și că Actions sunt activate</td>
                 </tr>
             </table>
         </section>
     </main>
 
     <footer>
-        <p>📅 Ultima actualizare: Mar 2026</p>
+        <p>📅 Ultima actualizare: Iun 2026</p>
     </footer>
 </body>
 </html>

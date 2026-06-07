@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Schema Date - Peviitor OpenCode AI Scrapers</title>
+    <title>Schema Date - AROBS Scraper — Node.js</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; background: #f5f5f5; }
@@ -53,7 +53,7 @@
     <main>
         <section>
             <h2>Job Model</h2>
-            <p>Schema pentru documentele de tip job stocate în Solr.</p>
+            <p>Schema pentru documentele de tip job stocate în Solr. Documentația completă: <code>job-model.md</code>.</p>
             
             <table>
                 <tr>
@@ -84,7 +84,7 @@
                     <td><code>cif</code></td>
                     <td class="type">string</td>
                     <td class="optional">Nu</td>
-                    <td>CIF/CUI al companiei. 8 cifre (fără prefix RO).</td>
+                    <td>CIF/CUI al companiei. 8 cifre (fără prefix RO). Pentru AROBS: <code>11291045</code>.</td>
                 </tr>
                 <tr>
                     <td><code>location</code></td>
@@ -96,19 +96,19 @@
                     <td><code>tags</code></td>
                     <td class="type">string[]</td>
                     <td class="optional">Nu</td>
-                    <td>Tag-uri pentru skills, seniority, și domeniu. Max 20 intrări, valori standardizate, <strong>FĂRĂ DIACRITICE</strong> (use "it" not "IT").</td>
+                    <td>Tag-uri pentru skills, seniority, și domeniu. Max 20 intrări, valori standardizate, <strong>FĂRĂ DIACRITICE</strong>.</td>
                 </tr>
                 <tr>
                     <td><code>workmode</code></td>
                     <td class="type">string</td>
                     <td class="optional">Nu</td>
-                    <td>Unul dintre: <code>"remote"</code>, <code>"on-site"</code>, <code>"hybrid"</code>.</td>
+                    <td>Unul dintre: <code>"remote"</code>, <code>"on-site"</code>, <code>"hybrid"</code>. Detectat automat din titlu/descriere.</td>
                 </tr>
                 <tr>
                     <td><code>date</code></td>
                     <td class="type">date</td>
                     <td class="optional">Nu</td>
-                    <td>Data scrape/indexare (ISO8601). Ex: <code>"2026-01-18T10:00:00Z"</code></td>
+                    <td>Data scrape/indexare (ISO8601). Ex: <code>"2026-06-07T10:00:00Z"</code></td>
                 </tr>
                 <tr>
                     <td><code>status</code></td>
@@ -126,20 +126,20 @@
                     <td><code>expirationdate</code></td>
                     <td class="type">date</td>
                     <td class="optional">Nu</td>
-                    <td>Data expirare estimată job. Max vdate + 30 zile, sau extras din pagina job-ului.</td>
+                    <td>Data expirare estimată job. Max vdate + 30 zile.</td>
                 </tr>
                 <tr>
                     <td><code>salary</code></td>
                     <td class="type">string</td>
                     <td class="optional">Nu</td>
-                    <td>Interval salarial + valută. Format: <code>"MIN-MAX CURRENCY"</code> (ex: "5000-8000 RON", "4000 EUR"). String, nu array.</td>
+                    <td>Interval salarial + valută. Format: <code>"MIN-MAX CURRENCY"</code> (ex: "5000-8000 RON"). String, nu array.</td>
                 </tr>
             </table>
         </section>
 
         <section>
             <h2>Company Model</h2>
-            <p>Schema pentru documentele de tip companie stocate în Solr.</p>
+            <p>Schema pentru documentele de tip companie stocate în Solr. Documentația completă: <code>company-model.md</code>.</p>
             
             <table>
                 <tr>
@@ -152,13 +152,25 @@
                     <td><code>id</code></td>
                     <td class="type">string</td>
                     <td class="required">Da</td>
-                    <td>CIF/CUI al companiei (ex: "12345678"). Exact 8 cifre, fără prefix RO.</td>
+                    <td>CIF/CUI al companiei (ex: "11291045"). Exact 8 cifre, fără prefix RO.</td>
                 </tr>
                 <tr>
                     <td><code>company</code></td>
                     <td class="type">string</td>
                     <td class="required">Da</td>
                     <td>Numele exact pentru potrivire job-uri. Numele legal din Registrul Comerțului. <strong>DIACRITICE NECESARE</strong>.</td>
+                </tr>
+                <tr>
+                    <td><code>brand</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Numele comercial al companiei (ex: "AROBS").</td>
+                </tr>
+                <tr>
+                    <td><code>group</code></td>
+                    <td class="type">string</td>
+                    <td class="optional">Nu</td>
+                    <td>Grupul parental al companiei (ex: "AROBS Group").</td>
                 </tr>
                 <tr>
                     <td><code>status</code></td>
@@ -176,7 +188,7 @@
                     <td><code>website</code></td>
                     <td class="type">string[]</td>
                     <td class="optional">Nu</td>
-                    <td>Site oficial companie. Trebuie fi HTTP/HTTPS valid, fără slash trailing. Array.</td>
+                    <td>Site oficial companie. HTTP/HTTPS valid, fără slash trailing. Array.</td>
                 </tr>
                 <tr>
                     <td><code>career</code></td>
@@ -185,28 +197,16 @@
                     <td>Pagină de carieră oficială. HTTP/HTTPS valid, fără slash trailing. Array.</td>
                 </tr>
                 <tr>
-                    <td><code>brand</code></td>
-                    <td class="type">string[]</td>
-                    <td class="optional">Nu</td>
-                    <td>Numele comercial/e al companiei (ex: ["AROBS"], ["Orange", "Orange Business"]). Array.</td>
-                </tr>
-                <tr>
-                    <td><code>group</code></td>
-                    <td class="type">string[]</td>
-                    <td class="optional">Nu</td>
-                    <td>Grupul parental al companiei (ex: ["Orange Group"]). Array.</td>
-                </tr>
-                <tr>
                     <td><code>lastScraped</code></td>
                     <td class="type">string</td>
                     <td class="optional">Nu</td>
-                    <td>Data ultimului scrape (format: YYYY-MM-DD, ex: "2026-03-05").</td>
+                    <td>Data ultimului scrape (format: YYYY-MM-DD).</td>
                 </tr>
                 <tr>
                     <td><code>scraperFile</code></td>
                     <td class="type">string</td>
                     <td class="optional">Nu</td>
-                    <td>Numele fișierului scraper (ex: "epam.md").</td>
+                    <td>URL către GitHub raw workflow YML (ex: <code>https://raw.githubusercontent.com/.../scrape.yml</code>).</td>
                 </tr>
             </table>
         </section>
@@ -215,17 +215,15 @@
             <h2>Exemplu Job Document</h2>
             <pre><code>[
   {
-    "url": "https://example.com/careers/software-engineer",
-    "title": "Software Engineer",
-    "company": "Example SRL",
-    "cif": "12345678",
-    "location": ["Cluj-Napoca", "București"],
-    "workmode": "hybrid",
-    "date": "2026-02-17T00:00:00Z",
-    "status": "scraped",
-    "expirationdate": "2026-03-17T00:00:00Z",
-    "salary": "5000-8000 RON",
-    "tags": ["senior", "it"]
+    "url": "https://careers-arobs.icims.com/jobs/3444/supplier-audit/job",
+    "title": "Supplier Audit",
+    "company": "AROBS TRANSILVANIA SOFTWARE S.A.",
+    "cif": "11291045",
+    "location": ["Cluj-Napoca"],
+    "tags": ["senior", "it"],
+    "workmode": "on-site",
+    "date": "2026-06-07T10:00:00Z",
+    "status": "scraped"
   }
 ]</code></pre>
             
@@ -238,17 +236,20 @@
             <h2>Exemplu Company Document</h2>
             <pre><code>[
   {
-    "id": "33159615",
+    "id": "11291045",
     "company": "AROBS TRANSILVANIA SOFTWARE S.A.",
+    "brand": "AROBS",
     "status": "activ",
-    "location": ["București", "Cluj-Napoca", "Iași", "Timișoara"],
-    "website": ["https://www.epam.com"],
-    "career": ["https://www.epam.com/careers/locations/romania"]
+    "location": ["Cluj-Napoca"],
+    "website": ["https://www.arobs.com"],
+    "career": ["https://www.arobs.com/careers-at-arobs/"],
+    "lastScraped": "2026-06-07",
+    "scraperFile": "https://raw.githubusercontent.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/master/.github/workflows/scrape.yml"
   }
 ]</code></pre>
             
-            <div class="note">
-                <strong>Notă:</strong> Companiile sunt stocate în core-ul <code>company</code>, iar job-urile în core-ul <code>job</code>.
+            <div class="alert">
+                <strong>Notă:</strong> Companiile sunt stocate în core-ul <code>company</code>, iar job-urile în core-ul <code>job</code>. CIF-ul AROBS Transilvania Software este <strong>11291045</strong>.
             </div>
         </section>
 
@@ -259,13 +260,13 @@
                 <p>Câmpul <code>description</code> <strong>NU există</strong> în schema Job. Nu îl adăuga niciodată în documentele trimise către Solr.</p>
             </div>
             <div class="note">
-                <strong> Câmpuri string[]</strong> sunt array-uri multi-valorice. În Solr sunt stocate ca arrays (ex: <code>["București", "Cluj-Napoca"]</code>).
+                <strong>📦 Câmpuri string[]</strong> sunt array-uri multi-valorice. În Solr sunt stocate ca arrays (ex: <code>["București", "Cluj-Napoca"]</code>).
             </div>
             <div class="note">
-                <strong>DIACRITICE:</strong> Asigură-te că folosești diacritice românești (ăâîșțĂÂÎȚ) acolo unde specificat în schema.
+                <strong>🔤 DIACRITICE:</strong> Asigură-te că folosești diacritice românești (ăâîșțĂÂÎȚ) acolo unde specificat în schemă.
             </div>
             <div class="alert">
-                <strong>URL Unic:</strong> Câmpul <code>url</code> din Job trebuie să fie unic. Dacă adaugi un job cu același URL, acesta va fi actualizat (upsert).
+                <strong>🔗 URL Unic:</strong> Câmpul <code>url</code> din Job trebuie să fie unic. Dacă adaugi un job cu același URL, acesta va fi actualizat (upsert).
             </div>
         </section>
         
@@ -377,11 +378,13 @@
             <pre><code>"tags": ["senior", "it"]
 "tags": ["junior", "data-science"]
 "tags": ["mid", "devops", "cloud"]</code></pre>
+
+            <p>Funcțiile care generează tag-uri în index.js: <code>getSeniorityTag()</code>, <code>getCategoryTags()</code>, <code>extractSkillTags()</code>.</p>
         </section>
     </main>
 
     <footer>
-        <p>📅 Ultima actualizare: Mar 2026</p>
+        <p>📅 Ultima actualizare: Iun 2026</p>
     </footer>
 </body>
 </html>
