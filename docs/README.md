@@ -1,45 +1,21 @@
-# Documentation
+# AROBS Scraper
 
-This folder contains documentation for the peviitor_opencode_AI_scrapers project.
+Scraper pentru AROBS Transilvania Software S.A. face parte din familia de scrapere [peviitor.ro](https://peviitor.ro).
 
-## Overview
+## Documentație
 
-This project automates job data scraping from peviitor.ro platform. It uses:
-- **Apache Solr** - For storing and indexing job/company data
-- **Chrome DevTools MCP** - For browser automation
-- **PowerShell** - For local automation scripts
-- **Playwright** - For testing
+1. [Info](index.html) — informații generale.
+2. [files.md](../files.md) — descrierea fișierelor.
+3. [TOPICS.md](../TOPICS.md) — topic-uri GitHub.
+4. [instructions.md](../instructions.md) — instrucțiuni.
+5. [job-model.md](../job-model.md) — modelul de date pentru job-uri.
+6. [company-model.md](../company-model.md) — modelul de date pentru companie.
 
-## Contents
-
-- [Commands](commands/README.md) - Available OpenCode commands
-- [Schemas](../SCHEMAS.md) - Job and Company data models
-- Company data - Now stored in Solr company core (query: https://solr.peviitor.ro/solr/company/select)
-
-## Quick Start
-
-1. Start Chrome with remote debugging: `powershell -ExecutionPolicy Bypass -File start-chrome.ps1`
-2. Start Solr container: `docker start peviitor-solr`
-3. Use OpenCode commands to scrape and manage job data
-
-## Important: Solr Delete Format
-
-When deleting documents from Solr, **always use the delete-by-query format**:
+## Developer
 
 ```bash
-curl -u "$SOLR_USER:$SOLR_PASSWD" -X POST -H "Content-Type: application/json" \
-  'https://solr.peviitor.ro/solr/job/update?commit=true' \
-  -d '{"delete":{"query":"url:\"https://example.com/job\""}}'
-```
-
-**Do NOT use** the `_delete_:true` format - it does not work properly.
-
-### Correct Format
-```json
-{"delete":{"query":"url:\"https://example.com/job\""}}
-```
-
-### Incorrect Format (Do NOT use)
-```json
-[{"url":"https://example.com/job","_delete_:true}]
+npm install
+echo "SOLR_AUTH=solr:SolrRocks" > .env.local
+node index.js
+npm test
 ```
