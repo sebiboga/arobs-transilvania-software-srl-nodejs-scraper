@@ -269,7 +269,7 @@ async function main() {
         website: ["https://www.arobs.com"],
         career: ["https://www.arobs.com/careers-at-arobs/"],
         lastScraped: new Date().toISOString().split('T')[0],
-        scraperFile: "https://raw.githubusercontent.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/master/.github/workflows/scrape.yml"
+        scraperFile: "https://raw.githubusercontent.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/main/.github/workflows/scrape.yml"
       });
     } catch (err) {
       console.log(`Note: Could not upsert company to SOLR core: ${err.message}`);

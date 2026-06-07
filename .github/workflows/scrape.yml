@@ -23,7 +23,7 @@ jobs:
       - name: Run scraper
         run: npm run scrape
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
 
       - name: Check for new jobs
         run: |
