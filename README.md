@@ -1,67 +1,135 @@
-# AROBS Scraper — Node.js
+# job_seeker_ro_spider — AROBS Careers Romania Scraper
 
-[![Tests](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/test.yml/badge.svg)](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/test.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![WebScraper AROBS to Peviitor](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/scrape.yml/badge.svg)](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/scrape.yml)
+[![Automation Tests](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/test.yml/badge.svg)](https://github.com/sebiboga/arobs-transilvania-software-srl-nodejs-scraper/actions/workflows/test.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![JavaScript](https://img.shields.io/badge/javascript-ESM-F7DF1E?logo=javascript&logoColor=black)](https://ecma-international.org/)
+[![Node.js](https://img.shields.io/badge/node-24-339933?logo=nodedotjs&logoColor=white)](https://nodejs.org/)
 
-Automated job scraper for **AROBS Transilvania Software S.A.** (CIF 11291045), pushing jobs to [peviitor.ro](https://peviitor.ro) via Solr.
+**job_seeker_ro_spider** — un scraper pentru job-urile AROBS Transilvania Software din România. Extrage anunțurile de pe [AROBS iCIMS Careers](https://careers-arobs.icims.com/jobs/search?ss=1&hashed=-435624355) și le publică în [peviitor.ro](https://peviitor.ro) prin API-ul SOLR.
 
-Jobs are scraped from AROBS' iCIMS career page using HTML parsing with cheerio, validated against ANAF, and upserted to Solr.
+## Overview
 
-## Quick Start
+Proiectul automatizează colectarea săptămânală a job-urilor AROBS din România, menținând board-ul peviitor.ro la zi cu cele mai recente oportunități de carieră.
 
-```bash
-npm install
-echo "SOLR_AUTH=solr:SolrRocks" > .env.local
-node index.js
-```
+## Features
+
+- Extrage job-uri din pagina HTML AROBS iCIMS Careers (cheerio)
+- Validează compania via ANAF (CUI 11291045, status activ/inactiv, adresă completă)
+- Cross-validează cu Peviitor API
+- Stochează în SOLR (job core + company core)
+- GitHub Actions: scrape săptămânal + testare automată (unit, integration, e2e)
+- Teste SOLR condiționale — auto-skip când `SOLR_AUTH` nu e setat
+- Se identifică prin User-Agent: `job_seeker_ro_spider`
 
 ## Project Structure
 
 ```
-├── index.js              # Main scraper
-├── company.js            # Company validation (ANAF + Peviitor)
-├── solr.js               # Solr CRUD operations
-├── validate-jobs.js      # Job URL validator
-├── demoanaf.js           # ANAF CLI entry point
-├── src/anaf.js           # ANAF API module
-├── tests/unit/           # Jest unit tests
-├── tests/e2e/            # E2E tests (live iCIMS fetch)
-├── tests/integration/    # Workflow tests
-├── docs/                 # HTML documentation
-└── .github/workflows/    # CI/CD pipelines
+├── index.js           # Main scraper entry point
+├── company.js         # Company validation via ANAF + Peviitor + SOLR
+├── demoanaf.js        # CLI wrapper for src/anaf.js
+├── src/anaf.js        # ANAF API core module (search + company details)
+├── solr.js            # SOLR operations (query, upsert, delete, company)
+├── validate-jobs.js   # Job URL validator
+├── ROBOTS.md          # robots.txt analysis and scraping policy
+├── tests/             # Test suite
+│   ├── unit/          # Unit tests (mocked APIs)
+│   ├── integration/   # Integration tests (ANAF + SOLR live)
+│   └── e2e/           # E2E tests (full pipeline, real iCIMS)
+├── .github/workflows/
+│   ├── scrape.yml     # Weekly scraping at 6 AM UTC Monday
+│   └── test.yml       # Automation Tests on push/PR
+└── package.json
 ```
 
-## Commands
+## Setup
 
-| Command | Description |
-|---------|-------------|
-| `npm test` | Run Jest tests |
-| `npm run scrape` | Run the scraper (alias: `node index.js`) |
-| `node validate-jobs.js <CIF>` | Validate job URLs |
-| `node demoanaf.js <CIF>` | Check company in ANAF |
+### Prerequisites
+
+- Node.js 24+
+- npm
+
+### Installation
+
+```bash
+npm install
+```
+
+### Configuration
+
+Set the `SOLR_AUTH` environment variable with your Solr credentials:
+
+```bash
+export SOLR_AUTH="username:password"
+```
+
+## Usage
+
+### Run the Scraper
+
+```bash
+npm run scrape
+```
+
+### Run Tests
+
+```bash
+# All tests
+npm test
+
+# Unit tests only
+npm run test:unit
+
+# Integration tests
+npm run test:integration
+
+# E2E tests
+npm run test:e2e
+```
+
+## Workflows
+
+### Weekly Scraping
+
+The `scrape.yml` workflow runs every Monday at 6 AM UTC via GitHub Actions. It:
+1. Validates company data via ANAF
+2. Scrapes current job listings from AROBS iCIMS Careers
+3. Updates Solr with new/removed jobs
+4. Uploads job data as artifacts
+
+### Test Automation
+
+The `test.yml` workflow runs on every push and pull request. It:
+1. Ensures AROBS exists in the company core
+2. Runs unit, integration, and E2E tests
+3. Validates data integrity in Solr
 
 ## Company Info
 
 - **Company**: AROBS TRANSILVANIA SOFTWARE S.A.
 - **CIF**: 11291045
-- **Careers**: https://careers-arobs.icims.com/jobs/search?ss=1&hashed=-435624355
 - **Status**: Active (ANAF verified)
+- **Careers**: https://careers-arobs.icims.com/jobs/search?ss=1&hashed=-435624355
 
-## Data Flow
+## Robots.txt Policy
 
-1. Extract existing jobs from Solr for CIF 11291045
-2. Validate company via ANAF API (demoanaf.ro)
-3. Scrape AROBS iCIMS career page with cheerio HTML parsing
-4. Transform data: parse locations, detect workmode, extract tags
-5. Upsert jobs to Solr (match by URL)
-6. Verify and clean up
+Acest scraper respectă regulile din [robots.txt](https://careers-arobs.icims.com/robots.txt) al AROBS iCIMS Careers. Pentru analiza completă, vezi [ROBOTS.md](ROBOTS.md).
 
-## CI/CD
+**Puncte cheie:**
+- robots.txt nu are nicio restricție — toate path-urile sunt `Allow`
+- Scraperul face o singură cerere per pagină cu User-Agent `job_seeker_ro_spider` — comportament rezonabil
+- Se scrapează doar HTML-ul paginilor de listare, fără a supraîncărca serverul
 
-- **Scrape**: Runs every Monday at 6:00 UTC via GitHub Actions
-- **Tests**: Runs on every push/PR to master
-- **Secrets**: `SOLR_AUTH` must be set in GitHub repo secrets
+## Disclaimer
 
-## Documentation
+This scraper is designed for educational purposes and legitimate job data aggregation for the Romanian job market. Please respect AROBS' Terms of Service and robots.txt when using this scraper.
 
-See [docs/index.html](docs/index.html) for full documentation.
+## License
+
+Copyright (c) 2024-2026 BOGA SEBASTIAN-NICOLAE
+
+Licensed under the [MIT License](LICENSE).
+
+## Managed By
+
+This project is managed by [ASOCIATIA OPORTUNITATI SI CARIERE](https://oportunitatisicariere.ro) and used as a web scraper for the [peviitor.ro](https://peviitor.ro) job board project.

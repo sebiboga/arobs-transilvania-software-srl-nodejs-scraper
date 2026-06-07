@@ -1,18 +1,24 @@
-name: Deploy
+name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [master]
+    branches: [main]
+  workflow_dispatch:
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v5
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
-          node-version: 20
-      - run: npm ci
-      - run: node index.js
-        env:
-          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
+          path: docs
+      - uses: actions/deploy-pages@v4

@@ -1,64 +1,43 @@
-# Contributing to Peviitor OpenCode AI Scrapers
+# Contributing to AROBS Job Scraper
 
 Thank you for your interest in contributing!
 
 ## How to Contribute
 
-### Reporting Bugs
-
-1. Check if the bug already exists
-2. Create a new issue with:
-   - Clear title
-   - Steps to reproduce
-   - Expected vs actual behavior
-   - Environment details
-
-### Suggesting Features
-
-1. Open a new issue
-2. Describe the feature
-3. Explain why it would be useful
-4. Provide examples if possible
-
-### Pull Requests
-
 1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/my-feature`
-3. Make your changes
-4. Run tests if applicable
-5. Commit with clear messages
-6. Push to your fork
-7. Submit a Pull Request
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## Development Setup
 
 ```bash
-# Clone the repo
-git clone https://github.com/peviitor-ro/peviitor-opencode-ai-scrapers.git
-cd peviitor-opencode-ai-scrapers
+# Clone your fork
+git clone https://github.com/YOUR_USERNAME/arobs-transilvania-software-srl-nodejs-scraper.git
 
-# Install test dependencies
-cd tests && npm install
-
-# Start Chrome for development
-powershell -ExecutionPolicy Bypass -File start-chrome.ps1
+# Install dependencies
+npm install
 
 # Run tests
-npx playwright test
+npm test
 ```
 
-## Coding Standards
+## Code Style
 
-- Follow existing code style in the project
-- Use meaningful variable names
-- Add comments for complex logic
-- Test your changes before submitting
+- Use ES6+ modules
+- Add tests for new features
+- Ensure all tests pass before submitting PR
+- Update documentation as needed
 
-## Questions?
+## Reporting Issues
 
-Open an issue for questions about contributing.
+Please report issues via GitHub Issues with:
+- Clear description of the problem
+- Steps to reproduce
+- Expected vs actual behavior
+- Environment details (Node version, OS, etc.)
 
-## Contact
+## License
 
-- Email: aocpeviitor@gmail.com
-- Website: https://oportunitatisicariere.ro
+By contributing, you agree that your contributions will be licensed under the MIT License.

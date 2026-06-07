@@ -9,7 +9,7 @@
 | `solr.js` | SOLR operations module - exports querySOLR, deleteJobByUrl, upsertJobs + standalone verify command |
 | `src/anaf.js` | ANAF API core module - exports getCompanyFromANAF(cif), getCompanyFromANAFWithFallback(cif, cached), searchCompany(brandName) |
 | `demoanaf.js` | CLI entry point for ANAF module (thin wrapper around src/anaf.js) |
-| `validate-jobs.js` | Job URL validator - checks if posted jobs are still active or expired |
+| `validate-jobs.js` | Standalone job URL validator |
 
 ## Markdown Files
 
@@ -19,9 +19,6 @@
 | `job-model.md` | Job schema definition (Peviitor Core) - fields, types, validation rules |
 | `company-model.md` | Company schema definition (Peviitor Core) - fields, types, validation rules |
 | `files.md` | This file - documents role of each project file |
-| `TOPICS.md` | Required GitHub topics specification |
-| `PUBLIC.md` | Repository visibility requirements |
-| `UPDATE-REPO-ABOUT.md` | Repo description and topics for GitHub About section |
 
 ## Configuration Files
 
@@ -30,6 +27,7 @@
 | `package.json` | Node.js project config - dependencies (node-fetch, cheerio), scripts |
 | `package-lock.json` | Locked dependency versions |
 | `.gitignore` | Ignores node_modules/, jobs.json, jobs_existing.json, .env.local |
+| `.env.local` | Local environment variables (SOLR_AUTH) - NOT committed |
 
 ## Data Files
 
@@ -47,4 +45,4 @@ Installed via npm:
 
 - All `.md` files contain dynamic schemas that may change over time
 - Check peviitor_core README.md for latest model definitions
-- Full workflow: check count → validate company (ANAF+Peviitor) → scrape AROBS iCIMS → transform (fix locations) → upsert → log summary
+- Full workflow: check count → validate company (ANAF+Peviitor) → scrape AROBS → transform (fix locations) → upsert → log summary
