@@ -168,7 +168,7 @@ function extractSkillTags(title, description) {
   return tags;
 }
 
-async function scrapeAllListings() {
+async function scrapeAllListings(testOnlyOnePage = false) {
   const allJobs = [];
   const seenUrls = new Set();
   let page = 0;
@@ -198,6 +198,7 @@ async function scrapeAllListings() {
     console.log(`Page ${page + 1}: ${result.jobs.length} jobs, ${newJobs} new (total: ${allJobs.length})`);
 
     if (page + 1 >= result.totalPages) break;
+    if (testOnlyOnePage) break;
     page++;
     await sleep(1500);
   }
@@ -245,9 +246,13 @@ async function main() {
     fs.mkdirSync("tmp", { recursive: true });
 
     console.log("=== Step 1: Get existing jobs count ===");
-    const existingResult = await querySOLR(COMPANY_CIF);
-    const existingCount = existingResult.numFound;
-    console.log(`Found ${existingCount} existing jobs in SOLR`);
+    let existingCount = 0;
+    try {
+      const existingResult = await querySOLR(COMPANY_CIF);
+      existingCount = existingResult.numFound;
+    } catch (err) {
+      console.log(`Note: Could not query SOLR for existing jobs: ${err.message}`);
+    }
 
     console.log("=== Step 2: Validate company via ANAF ===");
     const { company, cif, address } = await validateAndGetCompany();
@@ -270,7 +275,7 @@ async function main() {
       console.log(`Note: Could not upsert company to SOLR core: ${err.message}`);
     }
 
-    const rawJobs = await scrapeAllListings();
+    const rawJobs = await scrapeAllListings(testOnlyOnePage);
     console.log(`Jobs found on AROBS website: ${rawJobs.length}`);
 
     const jobs = rawJobs.map(job => mapToJobModel(job, localCif));
@@ -287,13 +292,24 @@ async function main() {
     console.log("Saved tmp/jobs.json");
 
     console.log("\n=== Step 4: Upsert jobs to SOLR ===");
-    await upsertJobs(payload.jobs);
+    try {
+      await upsertJobs(payload.jobs);
+    } catch (err) {
+      console.log(`Note: Could not upsert jobs to SOLR: ${err.message}`);
+    }
 
-    const finalResult = await querySOLR(COMPANY_CIF);
+    let finalCount = "N/A";
+    try {
+      const finalResult = await querySOLR(COMPANY_CIF);
+      finalCount = finalResult.numFound;
+    } catch (err) {
+      console.log(`Note: Could not query SOLR for final count: ${err.message}`);
+    }
+
     console.log(`\n=== SUMMARY ===`);
     console.log(`Jobs existing in SOLR before scrape: ${existingCount}`);
     console.log(`Jobs scraped from AROBS website: ${rawJobs.length}`);
-    console.log(`Jobs in SOLR after scrape: ${finalResult.numFound}`);
+    console.log(`Jobs in SOLR after scrape: ${finalCount}`);
     console.log(`====================`);
 
     console.log("\n=== DONE ===");
