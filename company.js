@@ -27,7 +27,11 @@ const COMPANY_MODEL_FIELDS = [
 async function getCompanyFromPeviitor(companyName) {
   const url = `${Peviitor_API_URL}?name=${encodeURIComponent(companyName)}`;
   const res = await fetch(url, {
-    headers: { "User-Agent": "job_seeker_ro_spider" }
+    headers: {
+      "User-Agent": "job_seeker_ro_spider",
+      "origin": "https://peviitor.ro",
+      "referer": "https://peviitor.ro/"
+    }
   });
   if (!res.ok) throw new Error(`Peviitor API error: ${res.status}`);
   const data = await res.json();
@@ -173,4 +177,25 @@ export async function validateAndGetCompany() {
   console.log("Ready to scrape jobs...\n");
 
   return { status: "active", company, cif, existingJobsCount: solrResult.numFound, address, anafData };
+}
+
+if (import.meta.url === `file://${process.argv[1]}` || process.argv[1]?.endsWith("company.js")) {
+  console.log("=== Running company.js independently ===\n");
+
+  const { company, cif, active } = await getCompanyData();
+  console.log(`\nResult: company=${company}, cif=${cif}, active=${active}`);
+
+  console.log("\n=== Peviitor Validation Test ===\n");
+
+  try {
+    const peviitorData = await getCompanyFromPeviitor(company);
+    console.log("Peviitor Data:");
+    console.log(JSON.stringify(peviitorData, null, 2));
+    validateCompanyModel(peviitorData);
+  } catch (e) {
+    console.log("Peviitor API error:", e.message);
+  }
+
+  const result = await validateAndGetCompany();
+  console.log("\nResult:", result);
 }

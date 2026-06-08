@@ -2,7 +2,7 @@ name: WebScraper AROBS to Peviitor
 
 on:
   schedule:
-    - cron: '0 6 * * 1'  # Every Monday at 6 AM
+    - cron: '0 6 * * *'  # Daily at 6 AM
   workflow_dispatch:
 
 jobs:
@@ -23,7 +23,7 @@ jobs:
       - name: Run scraper
         run: npm run scrape
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
 
       - name: Check for new jobs
         run: |

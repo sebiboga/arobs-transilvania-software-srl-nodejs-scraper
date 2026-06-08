@@ -2,7 +2,7 @@ name: Automation Tests
 
 on:
   schedule:
-    - cron: '0 7 * * 1'
+    - cron: '0 7 * * *'
   push:
     branches: [main]
   pull_request:
@@ -19,6 +19,7 @@ jobs:
   validate-jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    needs: Automation-Tests
 
     steps:
       - uses: actions/checkout@v5
@@ -44,7 +45,7 @@ jobs:
             node --no-deprecation tests/validate-arobs-jobs.js --delete
           fi
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
 
   ensure-company-core:
     runs-on: ubuntu-latest
@@ -52,7 +53,7 @@ jobs:
     steps:
       - name: Ensure AROBS exists in company core
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
         run: |
           EXISTING=$(curl -s --user "${SOLR_AUTH}" \
             "https://solr.peviitor.ro/solr/company/select?q=id:11291045&rows=1" | jq '.response.numFound')
@@ -78,9 +79,9 @@ jobs:
           echo "AROBS count after check: $FINAL"
 
           if [ "$FINAL" -ge "1" ]; then
-            echo "SUCCESS: AROBS is in company core"
+            echo "✅ SUCCESS: AROBS is in company core"
           else
-            echo "FAILED: AROBS still not in company core"
+            echo "❌ FAILED: AROBS still not in company core"
             exit 1
           fi
 
@@ -104,7 +105,7 @@ jobs:
           npm run test:unit
           mv test-report.html test-results-unit.html
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
 
       - name: Upload Unit Test Results
         uses: actions/upload-artifact@v7
@@ -118,7 +119,7 @@ jobs:
           npm run test:integration
           mv test-report.html test-results-integration.html
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
 
       - name: Upload Integration Test Results
         uses: actions/upload-artifact@v7
@@ -132,7 +133,7 @@ jobs:
           npm run test:e2e
           mv test-report.html test-results-e2e.html
         env:
-          SOLR_AUTH: ${{ secrets.SOLR_USER }}:${{ secrets.SOLR_PASSWD }}
+          SOLR_AUTH: ${{ secrets.SOLR_AUTH }}
 
       - name: Upload E2E Test Results
         uses: actions/upload-artifact@v7
